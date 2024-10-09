@@ -31,32 +31,29 @@ v5: .space 256
 v6: .space 256
 
 .text
-.globl main
 
-li $t0, 31
+daddui r1, r0, 0     # r1 holds the index (i)
+daddui r2, r0, 31    # r2 holds the loop counter (i = 31)
 
-for: 
-sll $t1, $t0, 3 # double precision, muliply by 8
-ld $f0, v1($t1)        
-ld $f2, v2($t1)        
-ld $f4, v3($t1)
+cycle:
+    l.d f1, v1(r1)       
+    l.d f2, v2(r1)       
+    l.d f3, v3(r1)       
 
-mul.d $f6, $f0, $f0
-sub.d $f6, $f6, $f2
-sd $f6, v4($t1)
+    mul.d f4, f1, f1     
+    sub.d f4, f4, f2     
+    s.d f4, v4(r1)       
 
-div.d $f8, $f6, $f4
-sub.d $f8, $f8, $f2
-sd $f8, v5($t1)
+    div.d f5, f4, f3     
+    sub.d f5, f5, f2     
+    s.d f5, v5(r1)      
 
-sub.d $f10, $f8, $f0
-mul.d $f10, $f10, $f8
-sd $f10, v6($t1)
+    sub.d f6, f4, f1     
+    mul.d f6, f6, f5     
+    s.d f6, v6(r1)      
 
-subi $t0, $t0, 1
-bgez $t0, for
+    daddui r1, r1, 8     
+    daddi r2, r2, -1     
+    bgez r2, cycle       
 
-li $v0, 10
-syscall
-
-
+    halt                  # End the program
