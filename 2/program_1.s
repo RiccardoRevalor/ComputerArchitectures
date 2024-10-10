@@ -41,7 +41,7 @@ cycle:
     #l.d f3, v3(r1)   MOSSA SOTTO        
 
     mul.d f4, f1, f1 
-    l.d f3, v3(r1) 
+    l.d f3, v3(r1)  
     sub.d f4, f4, f2    
     s.d f4, v4(r1)       
 
@@ -51,8 +51,8 @@ cycle:
 
     sub.d f6, f4, f1     
     mul.d f6, f6, f5  
-    daddi r2, r2, -1  
-    slt r3, r2, r0
+    daddi r2, r2, -1   
+    slt r3, r2, r0 
     s.d f6, v6(r1)      
 
     daddui r1, r1, 8     
