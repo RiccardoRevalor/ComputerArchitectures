@@ -38,7 +38,7 @@ v6: .space 256
 cycle:
     l.d f1, v1(r1)       
     l.d f2, v2(r1)   
-    #l.d f3, v3(r1)   MOSSA SOTTO        
+    #l.d f3, v3(r1)   moved down       
 
     mul.d f4, f1, f1 
     l.d f3, v3(r1)  
@@ -56,8 +56,8 @@ cycle:
     s.d f6, v6(r1)      
 
     daddui r1, r1, 8     
-    #daddi r2, r2, -1     MOSSA SOPRA
+    #daddi r2, r2, -1     moved up
        
-    #slt r3, r2, r0       MOSSA SOPRA
+    #slt r3, r2, r0       moved up
     beq r3, r0, cycle   
-    halt                  # End the program
+    halt                  
