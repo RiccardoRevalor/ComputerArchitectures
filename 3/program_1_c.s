@@ -59,7 +59,7 @@ cycle_unrolled:
 
 ### NOT MULTIPLE 1 ###
 not_multiple_1:
-    daddi r11, r11, 1 ##DEBUG
+    ##daddi r11, r11, 1 ##DEBUG
     #perform: a = v1[i] * ((double) m* i)
     dmul r4, r3, r2     #m*i
     mtc1 r4, f4         #f4 contains m*i in integer form
@@ -90,9 +90,12 @@ not_multiple_1:
 
 ### MULTIPLE ###
 multiple:
-##daddi r12, r12, 1 ##DEBUG
-    #perform: a = v1[i] / ((double)m<< i) /*logic shift */
     dsllv r3, r3, r2    #m<<i
+    l.d f2, v2(r1)
+    l.d f3, v3(r1)
+    l.d f1, v1(r1)
+    ##daddi r12, r12, 1 ##DEBUG
+    #perform: a = v1[i] / ((double)m<< i) /*logic shift */
     mtc1 r3, f4         #f4 contains m<<i in integer form
     cvt.d.l f4, f4      #f4 contains m<<i in double form
     div.d f5, f1, f4    #f5 contains a
@@ -122,12 +125,46 @@ multiple:
 
 
 end2:
+    #here, if r2 < 0 the program ends
     beq r10, r0, not_multiple_2  #if r2 >= 0, go to cycle
     daddi r1, r1, -8     #r1 = r1 - 8
     halt
 
 
-###MANCA DA FARE LA PARTE NOT MULTIPLE 2
+### NOT MULTIPLE 2 ###
+not_multiple_2:
+    dmul r4, r3, r2     #m*i
+    l.d f2, v2(r1)
+    ##daddi r11, r11, 1 ##DEBUG
+    l.d f3, v3(r1)
+    l.d f1, v1(r1)
+    mtc1 r4, f4         #f4 contains m*i in integer form
+    cvt.d.l f4, f4      #f4 contains m*i in double form
+    mul.d f5, f2, f4    #f5 contains a
+
+    #m = (int)a
+    cvt.l.d f6, f5
+    mfc1 r3, f6         #in r3 there is m = int(a)#perform: v4[i] = a*v1[i] – v2[i];
+
+    mul.d f6, f5, f1    #a*v1[i]
+    sub.d f6, f6, f2    #a*v1[i] - v2[i]
+    s.d f6, v4(r1)      #v4[i] = a*v1[i] - v2[i]
+
+#perform: v5[i] =v4[i]/v3[i] – b
+    div.d f7, f6, f3    #v4[i]/v3[i]
+    sub.d f9, f6, f1    #v4[i]-v1[i]
+    sub.d f7, f7, f8    #v4[i]/v3[i] - b
+    daddi r2, r2, -1    #r2 = r2 - 1
+    s.d f7, v5(r1)      #v5[i] = v4[i]/v3[i] - b
+
+#perform: v6[i] = (v4[i]-v1[i])*v5[i]
+    mul.d f9, f9, f7    #(v4[i]-v1[i])*v5[i]
+    s.d f9, v6(r1)      #v6[i] = (v4[i]-v1[i])*v5[i]
+
+    daddi r1, r1, -8     #r1 = r1 - 8
+
+    j cycle_unrolled
+
 
 
 

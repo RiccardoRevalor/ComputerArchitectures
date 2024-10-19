@@ -41,7 +41,6 @@ m: .word 1
     ##daddui r12, r0, 0    ##DEBUG
     dmul r1, r1, r2      #r1 = 31 * 8
     ld r3, m(r0)          #r3 = m = 1 at the beginning
-    daddui r6, r0, 3     #for checking if m is multiple of 3
     daddui r8, r0, 1     #b = 1 (double)
     #convert r8 to double
     mtc1 r8, f8
