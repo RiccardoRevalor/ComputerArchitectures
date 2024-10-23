@@ -29,9 +29,8 @@ div.d f20, f1, f15  |       FDEEEEEMW
                     |       - 30*E
 cvt.l.d f16, f20    |        FDSSSSEMW
 mtc1 r16, f16       |         FSSSSDEMW
--- 32 cycles
-
 daddui r9, r0, 2    |              FDEMW
+-- 33 cycles
 
 j end_if            |               FDEMW
 -- 34 cycles
