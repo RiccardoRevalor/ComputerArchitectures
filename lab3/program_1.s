@@ -42,7 +42,7 @@ fcs: .double 3.0 2.0
     l.d f21, fcs(r3) #f21 <- b = 2.0
 
     #r9 <- counter to check for multiples of 3
-    daddui r9, r9, 2 # start at 2 to sync it with the counter `i`
+    daddui r9, r9, 1 # start at 1 to sync it with the counter `i`
     l.d f10, fcs(r0)
 cycle:
     l.d f1, v1(r2)
@@ -65,7 +65,7 @@ cycle:
     cvt.l.d f16, f20
     mtc1 r16, f16
 
-    daddui r9, r0, 0
+    daddui r9, r0, 2
 
     j end_if
 else_not_multiple3:
@@ -80,9 +80,9 @@ else_not_multiple3:
     # m = (int) a
     cvt.l.d f16, f20
     mtc1 r16, f16
+    daddui r9, r9, -1
     # END IF
 end_if:
-    daddui r9, r9, 1
     # v4[i] = a*v1[i] – v2[i];
     mul.d f4, f20, f1
     sub.d f4, f4, f2

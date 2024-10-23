@@ -1,0 +1,81 @@
+
+.text
+daddui r1, r0, 31   |FDEMW
+daddui r2, r0, 248  | FDEMW
+daddui r3, r0, 1    |  FDEMW
+l.d f21, fcs(r3)    |   FDEMW
+daddui r9, r9, 1    |    FDEMW
+l.d f10, fcs(r0)    |     FDEMW
+
+-- 10 cycles
+
+cycle:
+l.d f1, v1(r2)      |FDEMW
+l.d f2, v2(r2)      | FDEMW
+l.d f3, v3(r2)      |  FDEMW
+
+
+bne r9, r0, notmul3 |   FDEMW
+                    |   - possible delay slot
+-- 4 cycles
+
+dsllv r15, r15, r1  |    FDEMW
+mtc1 r3, f15        |     FDEMW
+cvt.d.l f15, f15    |      FDEMW
+
+-- 3 cycles
+
+div.d f20, f1, f15  |       FDEEEEEMW
+                    |       - 30*E
+cvt.l.d f16, f20    |        FDSSSSEMW
+mtc1 r16, f16       |         FSSSSDEMW
+-- 32 cycles
+
+daddui r9, r0, 2    |              FDEMW
+
+j end_if            |               FDEMW
+-- 34 cycles
+notmul3:
+-- 1 cycle wasted by branch prediction failed
+mtc1 r3, f15        |   FDEMW
+cvt.d.l f15, f15    |    FDEMW
+mtc1 r1, f16        |     FDEMW
+cvt.d.l f16, f16    |      FDEMW
+-- 4 cycles
+mul.d f15, f15, f16 |       FDEEEMW
+                    |       - 6*E
+mul.d f20, f15, f1  |        FDSSEEEMW
+                    |          - 6*E
+cvt.l.d f16, f20    |         FSSDSSEMW
+mtc1 r16, f16       |            FSSDEMW
+daddui r9, r9, -1   |               FDEMW
+-- 15 cycles
+end_if:             |
+mul.d f4, f20, f1   |                FDEEEMW
+                    |                - 6*E
+sub.d f4, f4, f2    |                 FDSSSEEMW
+                    |                    - 4*E
+s.d f4, v4(r2)      |                  FSSSSDEMW
+-- 11 cycles
+
+div.d f5, f4, f3    |                       FDEEEEMW
+                    |                       - 30*E
+sub.d f5, f5, f21   |                        FDSSSEEEMW
+                    |                           - 4*E
+s.d f5, v5(r2)      |                         FSSSDSSEMW
+-- 35 cycles
+
+sub.d f6, f4, f1    |                             FSSDEEEMW
+                    |                             - 4*E
+mul.d f6, f6, f5    |                                FDSSEEEMW
+                    |                                  - 6*E
+s.d f6, v6(r2)      |                                 FSSDSSEMW
+
+daddi r2, r2, -8    |                                    FSSDEMW
+daddi r1, r1, -1    |                                       FDEMW
+slt r3, r2, r0      |                                        FDEMW
+-- 14 cycles
+beq r3, r0, cycle   |                                         FDEMW
+                    |                                         - possible delay slot
+halt                |
+-- 2 cycles
