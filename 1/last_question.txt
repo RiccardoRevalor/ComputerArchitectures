@@ -1,2 +1,0 @@
-8 clock cycles: fp multiplication first time: 8 cock cycles, second time: 1 clock cycle
-4 clock cycles: fp multiplication first time: 4 cock cycles, second time: 1 clock cycle
