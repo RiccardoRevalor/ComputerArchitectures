@@ -115,27 +115,36 @@ __Vectors       DCD     __initial_sp              ; Top of Stack
                 AREA    |.ARM.__at_0x02FC|, CODE, READONLY
 CRP_Key         DCD     0xFFFFFFFF
                 ENDIF
-
-				AREA	myDataArea0, DATA, READWRITE
-mySpace 		SPACE 16
 					
+				AREA custom0, DATA, READWRITE
+myData			SPACE 16
+	
+				AREA custom1, DATA, READONLY
+myConstants 	DCW 57721,56649, 15328, 60606, 51209, 8240, 24310, 42159
+
+
                 AREA    |.text|, CODE, READONLY
-
-
-; Reset Handler
 
 Reset_Handler   PROC
                 EXPORT  Reset_Handler             [WEAK]
 				LDR r0, =myConstants
-				LDR r1, =Data
+				LDR r1, =myData
+				MOV r4, #4 ; counter fo the loop
 				
+Loop				
 				; sum values two by two
-				LDRH r2, [r0], #2
-                B .
+				LDRH r2, [r0], #2 ; first access then r0 + 2 bytes
+				LDRH r3, [r0], #2
+				ADD r3, r3, r2
+				STR r3, [r1], #4
+				
+				SUBS r4, r4, #1
+				BNE Loop
+				
+				B .
                 ENDP
+					
 
-				AREA myDataArea1, DATA, READONLY, 
-myConstants		myConstants DCW 57721,56649, 15328, 60606, 51209, 8240, 24310, 42159
 
 
 ; Dummy Exception Handlers (infinite loops which can be modified)
