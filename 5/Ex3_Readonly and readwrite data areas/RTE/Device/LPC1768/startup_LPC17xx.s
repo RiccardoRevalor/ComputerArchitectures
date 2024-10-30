@@ -116,7 +116,9 @@ __Vectors       DCD     __initial_sp              ; Top of Stack
 CRP_Key         DCD     0xFFFFFFFF
                 ENDIF
 
-
+				AREA	myDataArea0, DATA, READWRITE
+mySpace 		SPACE 16
+					
                 AREA    |.text|, CODE, READONLY
 
 
@@ -124,27 +126,16 @@ CRP_Key         DCD     0xFFFFFFFF
 
 Reset_Handler   PROC
                 EXPORT  Reset_Handler             [WEAK]
-                IMPORT  SystemInit
-				; register renaming
-
-singlevalue		RN 1
-doublevalue 	RN 2
-triplevalue		RN 3
-quadruplevalue	RN 4
-quintuplevalue	RN 5
-				; set r2 = r1*2
-				MOV doublevalue, singlevalue, LSL #1
-				; set r3 = r1*2+r1
-				MOV triplevalue, singlevalue, LSL #1
-				ADD triplevalue, triplevalue, singlevalue
-				; set quadruplevalue = singlevalue *4
-				MOV quadruplevalue, singlevalue, LSL #2
-				; set quintuplevalue = singlevalue * 5
-				MOV quintuplevalue, singlevalue, LSL #2
-				ADD quintuplevalue, quintuplevalue, singlevalue
+				LDR r0, =myConstants
+				LDR r1, =Data
 				
-      			B .
+				; sum values two by two
+				LDRH r2, [r0], #2
+                B .
                 ENDP
+
+				AREA myDataArea1, DATA, READONLY, 
+myConstants		myConstants DCW 57721,56649, 15328, 60606, 51209, 8240, 24310, 42159
 
 
 ; Dummy Exception Handlers (infinite loops which can be modified)

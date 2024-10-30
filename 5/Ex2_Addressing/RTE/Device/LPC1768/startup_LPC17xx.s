@@ -116,6 +116,8 @@ __Vectors       DCD     __initial_sp              ; Top of Stack
 CRP_Key         DCD     0xFFFFFFFF
                 ENDIF
 
+				AREA	DATA, DATA, NOINIT, READWRITE
+myData			SPACE 26
 
                 AREA    |.text|, CODE, READONLY
 
@@ -123,27 +125,51 @@ CRP_Key         DCD     0xFFFFFFFF
 ; Reset Handler
 
 Reset_Handler   PROC
-                EXPORT  Reset_Handler             [WEAK]
-                IMPORT  SystemInit
-				; register renaming
-
-singlevalue		RN 1
-doublevalue 	RN 2
-triplevalue		RN 3
-quadruplevalue	RN 4
-quintuplevalue	RN 5
-				; set r2 = r1*2
-				MOV doublevalue, singlevalue, LSL #1
-				; set r3 = r1*2+r1
-				MOV triplevalue, singlevalue, LSL #1
-				ADD triplevalue, triplevalue, singlevalue
-				; set quadruplevalue = singlevalue *4
-				MOV quadruplevalue, singlevalue, LSL #2
-				; set quintuplevalue = singlevalue * 5
-				MOV quintuplevalue, singlevalue, LSL #2
-				ADD quintuplevalue, quintuplevalue, singlevalue
-				
-      			B .
+                EXPORT  Reset_Handler             [WEAK] 
+                MOV r0, #1
+				MOV r1, #1
+				ADD r2, r0, r1 ; r2 = 1+1=2
+				ADD r3, r2, r1 ; r3 = 2+1=3
+				ADD r4, r3, r2 ; r4 = 3+2=5
+				ADD r5, r4, r3 ; r5 = 5+3 =8
+				ADD r6, r5, r4 ; r6 = 8+5 =13 = 0x0D
+				ADD r7, r6, r5 ; r7 = 13+8 = 21 = 0x15
+				ADD r8, r7, r6 ; r8 = 21+13= 34 = 0x22
+				ADD r9, r8, r7 ; r9 = 34 + 21 = 55 = 0x37
+				ADD r10, r9, r8 ; r10 = 55 + 34 = 89 = 0x59
+				ADD r11, r10, r9 ; r11 = 89 + 55 = 144 = 0x90
+				ADD r12, r11, r10 ; r12 = 144 + 89 = 233 = 0xE9
+				; Assign to r14 the address of the first byte of the memory area allocated before
+				LDR r14, =myData
+				; save the last 8 bits (LSB) to memory and increment r14
+				STRB r0, [r14]
+				STRB r1, [r14, #1]!
+				STRB r2, [r14, #1]!
+				STRB r3, [r14, #1]!
+				STRB r4, [r14, #1]!
+				STRB r5, [r14, #1]!
+				STRB r6, [r14, #1]!
+				STRB r7, [r14, #1]!
+				STRB r8, [r14, #1]!
+				STRB r9, [r14, #1]!
+				STRB r10, [r14, #1]!
+				STRB r11, [r14, #1]!
+				STRB r12, [r14, #1]!
+				ADD r14, #1
+				STRB r12, [r14], #1
+				STRB r11, [r14], #1 
+				STRB r10, [r14], #1
+				STRB r9, [r14], #1
+				STRB r8, [r14], #1
+				STRB r7, [r14], #1
+				STRB r6, [r14], #1
+				STRB r5, [r14], #1
+				STRB r4, [r14], #1
+				STRB r3, [r14], #1
+				STRB r2, [r14], #1
+				STRB r1, [r14], #1
+				STRB r0, [r14], #1
+				B .
                 ENDP
 
 
