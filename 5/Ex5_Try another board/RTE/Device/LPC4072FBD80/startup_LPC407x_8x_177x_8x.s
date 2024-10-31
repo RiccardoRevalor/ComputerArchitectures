@@ -132,6 +132,7 @@ Reset_Handler   PROC
 				; perform UADD8
 				UADD8 r4, r0, r1 
 				
+				B .				
                 ENDP
 
 
