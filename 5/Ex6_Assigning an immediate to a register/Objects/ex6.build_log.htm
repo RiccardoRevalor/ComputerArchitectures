@@ -1,0 +1,74 @@
+<html>
+<body>
+<pre>
+<h1>µVision Build Log</h1>
+<h2>Tool Versions:</h2>
+IDE-Version: µVision V5.41.0.0
+Copyright (C) 2024 ARM Ltd and ARM Germany GmbH. All rights reserved.
+License Information: Riccardo Revalor, Politecnico di Torino, LIC=----
+ 
+Tool Versions:
+Toolchain:       MDK-Lite  Version: 5.41.0.0
+Toolchain Path:  D:\ARM Keil\ARM\ARMCLANG\Bin
+C Compiler:      ArmClang.exe V6.22
+Assembler:       Armasm.exe V6.22
+Linker/Locator:  ArmLink.exe V6.22
+Library Manager: ArmAr.exe V6.22
+Hex Converter:   FromElf.exe V6.22
+CPU DLL:         SARMCM3.DLL V5.41.0.0
+Dialog DLL:      DCM.DLL V1.17.5.0
+Target DLL:      UL2CM3.DLL V1.164.14.0
+Dialog DLL:      TCM.DLL V1.56.4.0
+ 
+<h2>Project:</h2>
+R:\MAGISTRALE\ANNO 1\COMPUTER ARCHITECTURES\LABS\5\Ex6_Assigning an immediate to a register\ex6.uvprojx
+Project File Date:  10/31/2024
+
+<h2>Output:</h2>
+*** Using Compiler 'V6.22', folder: 'D:\ARM Keil\ARM\ARMCLANG\Bin'
+Build target 'Target_1'
+"RTE/Device/LPC1768/startup_LPC17xx.s", line 150: Error: A1871E: Immediate 0x00010002 cannot be represented by 0-255 shifted left by 0-23 or duplicated in all, odd or even bytes
+  150 0000001a     MOV r2, #0x00010002
+1 Error, 0 Warnings
+assembling startup_LPC17xx.s...
+linking...
+.\Objects\ex6.axf: error: L6002U: Could not open file .\objects\startup_lpc17xx.o: No such file or directory
+Not enough information to list image symbols.
+Not enough information to list load addresses in the image map.
+Finished: 2 information, 0 warning, 0 error and 1 fatal error messages.
+".\Objects\ex6.axf" - 1 Error(s), 0 Warning(s).
+
+<h2>Software Packages used:</h2>
+
+Package Vendor: ARM
+                https://www.keil.com/pack/ARM.CMSIS.6.1.0.pack
+                ARM::CMSIS@6.1.0
+                CMSIS (Common Microcontroller Software Interface Standard)
+   * Component: CORE Version: 6.1.0
+
+Package Vendor: Keil
+                http://www.keil.com/pack/Keil.LPC1700_DFP.2.7.1.pack
+                Keil::LPC1700_DFP@2.7.1
+                NXP LPC1700 Series Device Support, Drivers and Examples for MCB1700 and LPC1788-32
+   * Component: Startup Version: 1.0.0
+
+<h2>Collection of Component include folders:</h2>
+  ./RTE/Device/LPC1768
+  ./RTE/_Target_1
+  D:/ARM Keil/Packs/ARM/CMSIS/6.1.0/CMSIS/Core/Include
+  D:/ARM Keil/Packs/Keil/LPC1700_DFP/2.7.1/Device/Include
+
+<h2>Collection of Component Files used:</h2>
+
+   * Component: ARM::CMSIS:CORE@6.1.0
+
+   * Component: Keil::Device:Startup@1.0.0
+      Include file:  RTE_Driver/Config/RTE_Device.h
+      Source file:   Device/Source/system_LPC17xx.c
+      Include file:  Device/Include/LPC17xx.h
+      Source file:   Device/Source/ARM/startup_LPC17xx.s
+Target not created.
+Build Time Elapsed:  00:00:01
+</pre>
+</body>
+</html>
