@@ -116,13 +116,6 @@ __Vectors       DCD     __initial_sp              ; Top of Stack
 CRP_Key         DCD     0xFFFFFFFF
                 ENDIF
 
-				AREA myConstantsArea, READONLY
-myConstants DCW 57721,56649, 15328, 60606, 51209, 8240, 24310, 42159
-
-
-				AREA mySpaceArea, READWRITE
-mySpace 		SPACE 16
-
 
                 AREA    |.text|, CODE, READONLY
 
@@ -131,22 +124,12 @@ mySpace 		SPACE 16
 
 Reset_Handler   PROC
                 EXPORT  Reset_Handler             [WEAK]
-					
-				LDR r0, =myConstants    ;address in memory of myConstants (of 577721)
-				LDR r1, =mySpace         ; Load the address of mySpace into r0
-				MOV r5, #4
-				
-Loop	
-				SUB r5, #1
-				LDRH r2, [r0], #2
-				LDRH r3, [r0], #2
-				ADD r4, r2, r3
-				STR r4, [r1], #4
-				
-				CMP r5, #0        
-				BNE Loop
-				
-				B .
+                IMPORT  SystemInit
+                IMPORT  __main
+                LDR     R0, =SystemInit
+                BLX     R0
+                LDR     R0, =__main
+                BX      R0
                 ENDP
 
 

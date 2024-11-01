@@ -1,34 +1,30 @@
-;/**************************************************************************//**
-; * @file     startup_LPC17xx.s
-; * @brief    CMSIS Cortex-M3 Core Device Startup File for
-; *           NXP LPC17xx Device Series
-; * @version  V1.10
-; * @date     06. April 2011
+;/*****************************************************************************
+; * @file:    startup_LPC407x_8x.s
+; * @purpose: CMSIS Cortex-M4 Core Device Startup File
+; *           for the NXP LPC407x_8x Device Series
+; * @version: V1.20
+; * @date:    16. January 2012
+; *------- <<< Use Configuration Wizard in Context Menu >>> ------------------
 ; *
-; * @note
-; * Copyright (C) 2009-2011 ARM Limited. All rights reserved.
-; *
-; * @par
-; * ARM Limited (ARM) is supplying this software for use with Cortex-M
+; * Copyright (C) 2012 ARM Limited. All rights reserved.
+; * ARM Limited (ARM) is supplying this software for use with Cortex-M4
 ; * processor based microcontrollers.  This file can be freely distributed
 ; * within development tools that are supporting such ARM based processors.
 ; *
-; * @par
 ; * THIS SOFTWARE IS PROVIDED "AS IS".  NO WARRANTIES, WHETHER EXPRESS, IMPLIED
 ; * OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, IMPLIED WARRANTIES OF
 ; * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE.
 ; * ARM SHALL NOT, IN ANY CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR
 ; * CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
 ; *
-; ******************************************************************************/
+; *****************************************************************************/
 
-; *------- <<< Use Configuration Wizard in Context Menu >>> ------------------
 
 ; <h> Stack Configuration
 ;   <o> Stack Size (in Bytes) <0x0-0xFFFFFFFF:8>
 ; </h>
 
-Stack_Size      EQU     0x00000200
+Stack_Size      EQU     0x00000400
 
                 AREA    STACK, NOINIT, READWRITE, ALIGN=3
 Stack_Mem       SPACE   Stack_Size
@@ -56,22 +52,22 @@ __heap_limit
                 AREA    RESET, DATA, READONLY
                 EXPORT  __Vectors
 
-__Vectors       DCD     __initial_sp              ; Top of Stack
-                DCD     Reset_Handler             ; Reset Handler
-                DCD     NMI_Handler               ; NMI Handler
-                DCD     HardFault_Handler         ; Hard Fault Handler
-                DCD     MemManage_Handler         ; MPU Fault Handler
-                DCD     BusFault_Handler          ; Bus Fault Handler
-                DCD     UsageFault_Handler        ; Usage Fault Handler
-                DCD     0                         ; Reserved
-                DCD     0                         ; Reserved
-                DCD     0                         ; Reserved
-                DCD     0                         ; Reserved
-                DCD     SVC_Handler               ; SVCall Handler
-                DCD     DebugMon_Handler          ; Debug Monitor Handler
-                DCD     0                         ; Reserved
-                DCD     PendSV_Handler            ; PendSV Handler
-                DCD     SysTick_Handler           ; SysTick Handler
+__Vectors       DCD     __initial_sp              ;  0: Top of Stack
+                DCD     Reset_Handler             ;  1: Reset Handler
+                DCD     NMI_Handler               ;  2: NMI Handler
+                DCD     HardFault_Handler         ;  3: Hard Fault Handler
+                DCD     MemManage_Handler         ;  4: MPU Fault Handler
+                DCD     BusFault_Handler          ;  5: Bus Fault Handler
+                DCD     UsageFault_Handler        ;  6: Usage Fault Handler
+                DCD     0                         ;  7: Reserved for checksum of first 8 vectors
+                DCD     0                         ;  8: Reserved
+                DCD     0                         ;  9: Reserved
+                DCD     0                         ; 10: Reserved
+                DCD     SVC_Handler               ; 11: SVCall Handler
+                DCD     DebugMon_Handler          ; 12: Debug Monitor Handler
+                DCD     0                         ; 13: Reserved
+                DCD     PendSV_Handler            ; 14: PendSV Handler
+                DCD     SysTick_Handler           ; 15: SysTick Handler
 
                 ; External Interrupts
                 DCD     WDT_IRQHandler            ; 16: Watchdog Timer
@@ -87,7 +83,7 @@ __Vectors       DCD     __initial_sp              ; Top of Stack
                 DCD     I2C0_IRQHandler           ; 26: I2C0
                 DCD     I2C1_IRQHandler           ; 27: I2C1
                 DCD     I2C2_IRQHandler           ; 28: I2C2
-                DCD     SPI_IRQHandler            ; 29: SPI
+                DCD     0                         ; 29: reserved, not for SPIFI anymore
                 DCD     SSP0_IRQHandler           ; 30: SSP0
                 DCD     SSP1_IRQHandler           ; 31: SSP1
                 DCD     PLL0_IRQHandler           ; 32: PLL0 Lock (Main PLL)
@@ -103,25 +99,24 @@ __Vectors       DCD     __initial_sp              ; Top of Stack
                 DCD     DMA_IRQHandler            ; 42: General Purpose DMA
                 DCD     I2S_IRQHandler            ; 43: I2S
                 DCD     ENET_IRQHandler           ; 44: Ethernet
-                DCD     RIT_IRQHandler            ; 45: Repetitive Interrupt Timer
+                DCD     MCI_IRQHandler            ; 45: SD/MMC card I/F
                 DCD     MCPWM_IRQHandler          ; 46: Motor Control PWM
                 DCD     QEI_IRQHandler            ; 47: Quadrature Encoder Interface
                 DCD     PLL1_IRQHandler           ; 48: PLL1 Lock (USB PLL)
                 DCD     USBActivity_IRQHandler    ; 49: USB Activity interrupt to wakeup
                 DCD     CANActivity_IRQHandler    ; 50: CAN Activity interrupt to wakeup
+                DCD     UART4_IRQHandler          ; 51: UART4
+                DCD     SSP2_IRQHandler           ; 52: SSP2
+                DCD     LCD_IRQHandler            ; 53: LCD
+                DCD     GPIO_IRQHandler           ; 54: GPIO
+                DCD     PWM0_IRQHandler           ; 55: PWM0
+                DCD     EEPROM_IRQHandler         ; 56: EEPROM
 
 
                 IF      :LNOT::DEF:NO_CRP
                 AREA    |.ARM.__at_0x02FC|, CODE, READONLY
-CRP_Key         DCD     0xFFFFFFFF
+CRP_Key	        DCD     0xFFFFFFFF
                 ENDIF
-
-				AREA myConstantsArea, READONLY
-myConstants DCW 57721,56649, 15328, 60606, 51209, 8240, 24310, 42159
-
-
-				AREA mySpaceArea, READWRITE
-mySpace 		SPACE 16
 
 
                 AREA    |.text|, CODE, READONLY
@@ -132,19 +127,10 @@ mySpace 		SPACE 16
 Reset_Handler   PROC
                 EXPORT  Reset_Handler             [WEAK]
 					
-				LDR r0, =myConstants    ;address in memory of myConstants (of 577721)
-				LDR r1, =mySpace         ; Load the address of mySpace into r0
-				MOV r5, #4
+				LDR r0, =0x7A30458D
+				LDR r1, =0xC3159EAA
 				
-Loop	
-				SUB r5, #1
-				LDRH r2, [r0], #2
-				LDRH r3, [r0], #2
-				ADD r4, r2, r3
-				STR r4, [r1], #4
-				
-				CMP r5, #0        
-				BNE Loop
+				UADD8 r4, r0, r1 
 				
 				B .
                 ENDP
@@ -209,7 +195,7 @@ Default_Handler PROC
                 EXPORT  I2C0_IRQHandler           [WEAK]
                 EXPORT  I2C1_IRQHandler           [WEAK]
                 EXPORT  I2C2_IRQHandler           [WEAK]
-                EXPORT  SPI_IRQHandler            [WEAK]
+                ;EXPORT  SPIFI_IRQHandler         [WEAK]
                 EXPORT  SSP0_IRQHandler           [WEAK]
                 EXPORT  SSP1_IRQHandler           [WEAK]
                 EXPORT  PLL0_IRQHandler           [WEAK]
@@ -225,12 +211,18 @@ Default_Handler PROC
                 EXPORT  DMA_IRQHandler            [WEAK]
                 EXPORT  I2S_IRQHandler            [WEAK]
                 EXPORT  ENET_IRQHandler           [WEAK]
-                EXPORT  RIT_IRQHandler            [WEAK]
+                EXPORT  MCI_IRQHandler            [WEAK]
                 EXPORT  MCPWM_IRQHandler          [WEAK]
                 EXPORT  QEI_IRQHandler            [WEAK]
                 EXPORT  PLL1_IRQHandler           [WEAK]
                 EXPORT  USBActivity_IRQHandler    [WEAK]
                 EXPORT  CANActivity_IRQHandler    [WEAK]
+                EXPORT  UART4_IRQHandler          [WEAK]
+                EXPORT  SSP2_IRQHandler           [WEAK]
+                EXPORT  LCD_IRQHandler            [WEAK]
+                EXPORT  GPIO_IRQHandler           [WEAK]
+                EXPORT  PWM0_IRQHandler           [WEAK]
+                EXPORT  EEPROM_IRQHandler         [WEAK]
 
 WDT_IRQHandler
 TIMER0_IRQHandler
@@ -245,7 +237,7 @@ PWM1_IRQHandler
 I2C0_IRQHandler
 I2C1_IRQHandler
 I2C2_IRQHandler
-SPI_IRQHandler
+;SPIFI_IRQHandler	;not used
 SSP0_IRQHandler
 SSP1_IRQHandler
 PLL0_IRQHandler
@@ -261,12 +253,18 @@ CAN_IRQHandler
 DMA_IRQHandler
 I2S_IRQHandler
 ENET_IRQHandler
-RIT_IRQHandler
+MCI_IRQHandler
 MCPWM_IRQHandler
 QEI_IRQHandler
 PLL1_IRQHandler
 USBActivity_IRQHandler
 CANActivity_IRQHandler
+UART4_IRQHandler
+SSP2_IRQHandler
+LCD_IRQHandler
+GPIO_IRQHandler
+PWM0_IRQHandler
+EEPROM_IRQHandler
 
                 B       .
 
