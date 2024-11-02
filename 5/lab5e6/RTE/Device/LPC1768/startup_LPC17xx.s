@@ -128,6 +128,7 @@ myData			DCD 0x00F4C400
 Reset_Handler   PROC
                 EXPORT  Reset_Handler             [WEAK]
 					
+				MOV r0, #0x00010002
 				; SOLUTION 1
 				LDR r1, =myData
 				LDR r0, [r1]

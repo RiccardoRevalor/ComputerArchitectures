@@ -27,10 +27,16 @@ Project File Date:  11/01/2024
 <h2>Output:</h2>
 *** Using Compiler 'V6.22', folder: 'C:\Users\silviab24\AppData\Local\Keil_v5\ARM\ARMCLANG\Bin'
 Build target 'Target_1'
+"RTE/Device/LPC1768/startup_LPC17xx.s", line 131: Error: A1871E: Immediate 0x00010002 cannot be represented by 0-255 shifted left by 0-23 or duplicated in all, odd or even bytes
+  131 00000000     MOV r0, #0x00010002
+1 Error, 0 Warnings
 assembling startup_LPC17xx.s...
 linking...
-Program Size: Code=564 RO-data=204 RW-data=0 ZI-data=512  
-".\Objects\lab5e6.axf" - 0 Error(s), 0 Warning(s).
+.\Objects\lab5e6.axf: error: L6002U: Could not open file .\objects\startup_lpc17xx.o: No such file or directory
+Not enough information to list image symbols.
+Not enough information to list load addresses in the image map.
+Finished: 2 information, 0 warning, 0 error and 1 fatal error messages.
+".\Objects\lab5e6.axf" - 1 Error(s), 0 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -57,10 +63,11 @@ Package Vendor: Keil
    * Component: ARM::CMSIS:CORE@6.1.0
 
    * Component: Keil::Device:Startup@1.0.0
-      Include file:  RTE_Driver/Config/RTE_Device.h
-      Include file:  Device/Include/LPC17xx.h
       Source file:   Device/Source/system_LPC17xx.c
+      Include file:  RTE_Driver/Config/RTE_Device.h
       Source file:   Device/Source/ARM/startup_LPC17xx.s
+      Include file:  Device/Include/LPC17xx.h
+Target not created.
 Build Time Elapsed:  00:00:00
 </pre>
 </body>
