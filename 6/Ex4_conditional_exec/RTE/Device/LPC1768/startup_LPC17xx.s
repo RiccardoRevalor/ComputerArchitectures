@@ -124,9 +124,7 @@ CRP_Key         DCD     0xFFFFFFFF
 
 Reset_Handler   PROC
                 EXPORT  Reset_Handler             [WEAK]
-				
-				; first version, using CLZ for counting leading zeros
-				mov r10, #0x00000201
+				mov r10, #0x00000101
 				mov r11, #2
 				mov r12, #1
 				
@@ -134,17 +132,14 @@ Reset_Handler   PROC
 				
 				;check if the number of leading zeros is odd or even
 				;check if the last bit is 1 (odd) or 0 (even)
-				tst r0, #1
-				beq even
+				tst r0, #1 ;it sets Z flag to 1 if so
 				
-				; odd case
-				sub r8, r11, r12
-				b stop
+				;case 1: last bit is 1 --> odd
+				subne r8, r11, r12 
 				
-				; even case
-even			add r8, r11, r12
-				
-stop            b .
+				;case 2: last bit is 0 --> even
+				addeq r8, r11, r12 
+                b .
                 ENDP
 
 
