@@ -115,13 +115,6 @@ __Vectors       DCD     __initial_sp              ; Top of Stack
                 AREA    |.ARM.__at_0x02FC|, CODE, READONLY
 CRP_Key         DCD     0xFFFFFFFF
                 ENDIF
-					
-					
-				AREA myProcessStack, NOINIT, READWRITE
-				SPACE 400
-				;Implememnt PSP as a full descending stack
-				;the lable points at the end of this area
-INITIAL_SP
 
 
                 AREA    |.text|, CODE, READONLY
@@ -129,35 +122,14 @@ INITIAL_SP
 
 ; Reset Handler
 
-
 Reset_Handler   PROC
                 EXPORT  Reset_Handler             [WEAK]
-					
-					
-					
-				;initialize PSP
-				ldr r2, =INITIAL_SP ;I've created this label (look at the top)
-				msr PSP, r2
-				
-				
-				;bus faults
-				mrs r0, CONTROL ; load control reg
-				orr r0, r0, #2 ; set the 2nd bit
-				
-				;move to the control reg the value of r0
-				msr	CONTROL, r0
-				
-				;use the PSP
-				; push a value
-				mov r1, #4
-				push {r1} ;I am pushing in PSP
-				
-				;;MESSAGE: ACCESS VIOLATION AT ADX 0XFFFFFFFC: NO WRITE PERMISSION
-				;However I am not generating a bus fault because it is raised ONLY on the BOARD !!!!!
-				
-				;ANYWAY,	HAVE A LOOK AT THE BusFault_Handler
-				
-                b .
+                IMPORT  SystemInit
+                IMPORT  __main
+                LDR     R0, =SystemInit
+                BLX     R0
+                LDR     R0, =__main
+                BX      R0
                 ENDP
 
 
@@ -180,52 +152,7 @@ MemManage_Handler\
 BusFault_Handler\
                 PROC
                 EXPORT  BusFault_Handler          [WEAK]
-					
-				;IDEA: I should check the king of the reason
-				; BUS FAULT STAT REG ADX: 0xE000ED29 JUST 1 BYTE
-				ldr r0, =0xE000ED29
-				ldrb r1, [r0]
-				
-				;test bit number 4
-				
-				tst r1, 0x10
-				bne stack_pointer_problem
-				;test other bits ...
-				
                 B       .
-				
-stack_pointer_problem
-				; here I test another thing
-				; a bus fault can be PRECISE OR NOT PRECISE
-				; 1) if bus fault is PRECISE: the probkem was due to the last completed instruction
-				; I expect it weas precise because the last instruction generated the buf fault but there are otgher cases
-				; 2) but fault NOT PRECISE: if the adx of a write instructiomn nis wrong since that instr is buffered for a later execution then when the bus fault is generated it is not associated to the last executed intr in the code
-				
-				; in this case it should be precise but i should CHECK IT
-				
-				;1) is the bus fault precise? How can I know it? I have to check but number 1 of the buf fault status register
-				
-				tst r1, #2 ;test bit 1
-				bne precise_fault
-				;otherwise: not precise fault...do other things
-				
-precise_fault
-				; can I retrieve the offending adx where I was pushing?
-				;can I retrieve the offending address??
-				;in order to do it I will check bit number 7 of the bus fault status register
-				
-				; if bit 7 == 1 --> I jump to another label to retrieve the address
-				tst r1, #0x80 ;in bin: 10000000
-				bne get_address
-				;otherwise..it's a problem ...
-				
-get_address
-				; get the address oif the bus fault address register
-				; bus fault address register: 0xE000ED38
-				ldr r2, =0xE000ED38
-				ldr r3, [r2]
-				;idea: check which is the problem related to this specific adx and solve it
-				
                 ENDP
 UsageFault_Handler\
                 PROC

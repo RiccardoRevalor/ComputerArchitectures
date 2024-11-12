@@ -116,7 +116,6 @@ __Vectors       DCD     __initial_sp              ; Top of Stack
 CRP_Key         DCD     0xFFFFFFFF
                 ENDIF
 					
-					
 				AREA myProcessStack, NOINIT, READWRITE
 				SPACE 400
 				;Implememnt PSP as a full descending stack
@@ -129,18 +128,13 @@ INITIAL_SP
 
 ; Reset Handler
 
-
 Reset_Handler   PROC
                 EXPORT  Reset_Handler             [WEAK]
-					
-					
 					
 				;initialize PSP
 				ldr r2, =INITIAL_SP ;I've created this label (look at the top)
 				msr PSP, r2
 				
-				
-				;bus faults
 				mrs r0, CONTROL ; load control reg
 				orr r0, r0, #2 ; set the 2nd bit
 				
@@ -151,11 +145,24 @@ Reset_Handler   PROC
 				; push a value
 				mov r1, #4
 				push {r1} ;I am pushing in PSP
+					
+				; move to user level
+				mrs r0, CONTROL
+				; write 1 (user level) in the least significant bit
+				ORR r0, r0, #1
+				;BEWARE: ORR CONTROL, CONTROL, #1 raises an error necause normal instructions do not work on special registers!
 				
-				;;MESSAGE: ACCESS VIOLATION AT ADX 0XFFFFFFFC: NO WRITE PERMISSION
-				;However I am not generating a bus fault because it is raised ONLY on the BOARD !!!!!
+				msr CONTROL, r0 ;this sets the UNPRIVILEGED (=USER) LEVEL
 				
-				;ANYWAY,	HAVE A LOOK AT THE BusFault_Handler
+				
+				
+				;implement a supervisor call to movbe to the privileged level
+				;svc call the scv code handler
+				svc #7 ; have a look at suoervisor code handler
+				; svc is a 16 bit instruction !! half word in disassembly
+				
+				
+				
 				
                 b .
                 ENDP
@@ -180,52 +187,7 @@ MemManage_Handler\
 BusFault_Handler\
                 PROC
                 EXPORT  BusFault_Handler          [WEAK]
-					
-				;IDEA: I should check the king of the reason
-				; BUS FAULT STAT REG ADX: 0xE000ED29 JUST 1 BYTE
-				ldr r0, =0xE000ED29
-				ldrb r1, [r0]
-				
-				;test bit number 4
-				
-				tst r1, 0x10
-				bne stack_pointer_problem
-				;test other bits ...
-				
                 B       .
-				
-stack_pointer_problem
-				; here I test another thing
-				; a bus fault can be PRECISE OR NOT PRECISE
-				; 1) if bus fault is PRECISE: the probkem was due to the last completed instruction
-				; I expect it weas precise because the last instruction generated the buf fault but there are otgher cases
-				; 2) but fault NOT PRECISE: if the adx of a write instructiomn nis wrong since that instr is buffered for a later execution then when the bus fault is generated it is not associated to the last executed intr in the code
-				
-				; in this case it should be precise but i should CHECK IT
-				
-				;1) is the bus fault precise? How can I know it? I have to check but number 1 of the buf fault status register
-				
-				tst r1, #2 ;test bit 1
-				bne precise_fault
-				;otherwise: not precise fault...do other things
-				
-precise_fault
-				; can I retrieve the offending adx where I was pushing?
-				;can I retrieve the offending address??
-				;in order to do it I will check bit number 7 of the bus fault status register
-				
-				; if bit 7 == 1 --> I jump to another label to retrieve the address
-				tst r1, #0x80 ;in bin: 10000000
-				bne get_address
-				;otherwise..it's a problem ...
-				
-get_address
-				; get the address oif the bus fault address register
-				; bus fault address register: 0xE000ED38
-				ldr r2, =0xE000ED38
-				ldr r3, [r2]
-				;idea: check which is the problem related to this specific adx and solve it
-				
                 ENDP
 UsageFault_Handler\
                 PROC
@@ -234,7 +196,84 @@ UsageFault_Handler\
                 ENDP
 SVC_Handler     PROC
                 EXPORT  SVC_Handler               [WEAK]
+					
+				;when I call svc I jump to supervisor call handler
+				
+				;1) recognize the number of the svc (so the number 7 in our case)
+				;but I a comoplex system we have hundreds of svc so we have to retrieve the number
+				;retrieve number 7
+				
+				;read the PC to get the encoding of the instruction
+				;inside the encoding there's a field with value 7, so we have to get that field
+				
+				
+				;1) retrieve what stack was used
+				tst lr, #0x4
+				ite eq
+				mrseq r0, MSP
+				;if equal to 0 I use PSP
+				mrsne r0, PSP
+				;2) retrieve PC from stack
+				
+				ldr r1, [r0, #24] ; now r1 is equal to PC 
+				; r1 contains the PC
+				; I wanna load the content of PC
+				
+				; this instr is  16 bits instr so half word - 2 
+				; this because PC points to next instr but they are 16 bits and not 32 so -2 instead of -4				
+				;in the disassembly code the immediate value is saved in the second byte of the halfword (DF07)
+				; but when the assembler saves the code in memory it uses little endian notation
+				; so first we have 07 then DF
+				;I wanna read the first byte, that's alreadsy pointed by the PC
+				;I have to load the first byte 
+				ldrb r2, [r1, #-2]
+				
+				
+				; IMPLEMENT ALL THE SV CALLS
+				
+				cmp r2, #1
+				beq implemetation_of_SVC1
+				
+				cmp r2, #2
+				beq implemetation_of_SVC2
+				
+				; ...
+				
+				cmp r2, #7
+				beq implemetation_of_SVC7
+				
+					
+				;3) do something to emulate the coprocessor instruction
+				bx lr
+				
                 B       .
+
+implemetation_of_SVC1
+				b .
+				
+				
+implemetation_of_SVC2
+				b .
+				
+implemetation_of_SVC7
+				; I wanna move to the privileged level for when I finish the executiuon of the handler and return to main
+				; in the handler I am already in priv level but I wanna be in it at the main
+				
+				; EX: I try to move to the privileged back again
+				; I need to write the lsb of control reg to zero
+				mrs r0, CONTROL
+				; I can apply an and mask:
+				; and r0, r0, #0xFFFFFFFE ; 1111111....11111...0 at the end
+				; but the most convenient way is to use BIC:
+				bic r0, r0, #1 ;also BIC i useful for clearing bits in the middle (it's not so immediate by using and and)
+				; I want to use the program stack pointer (PSP) by setting the seconcd least significant bit to 1
+				;orr r0, r0, #2_10
+				
+				
+				msr CONTROL, r0 ; -> THIS HAS NO EFFECT AS IT CAN BE DONE ONLY IN PRIVILEGED MODE BUT I AM CURRENTLY IN USER MODE!!!!!
+				
+				bx lr
+				
                 ENDP
 DebugMon_Handler\
                 PROC
