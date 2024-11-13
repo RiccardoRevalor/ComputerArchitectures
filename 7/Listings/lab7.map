@@ -10,9 +10,7 @@ Section Cross References
     startup_lpc17xx.o(RESET) refers to startup_lpc17xx.o(STACK) for __initial_sp
     startup_lpc17xx.o(RESET) refers to startup_lpc17xx.o(.text) for Reset_Handler
     startup_lpc17xx.o(.ARM.__at_0x02FC) refers (Special) to heapauxi.o(.text) for __use_two_region_memory
-    startup_lpc17xx.o(.mem) refers (Special) to heapauxi.o(.text) for __use_two_region_memory
     startup_lpc17xx.o(.text) refers (Special) to heapauxi.o(.text) for __use_two_region_memory
-    startup_lpc17xx.o(.text) refers to startup_lpc17xx.o(.mem) for Best_times
     startup_lpc17xx.o(.text) refers to startup_lpc17xx.o(HEAP) for Heap_Mem
     startup_lpc17xx.o(.text) refers to startup_lpc17xx.o(STACK) for Stack_Mem
     system_lpc17xx.o(.text.SystemCoreClockUpdate) refers to lludivv7m.o(.text) for __aeabi_uldivmod
@@ -101,17 +99,16 @@ Image Symbol Table
     dc.s                                     0x00000000   Number         0  dc.o ABSOLUTE
     system_LPC17xx.c                         0x00000000   Number         0  system_lpc17xx.o ABSOLUTE
     RESET                                    0x00000000   Section      204  startup_lpc17xx.o(RESET)
-    .text                                    0x000000cc   Section      120  startup_lpc17xx.o(.text)
-    .text                                    0x00000144   Section        0  heapauxi.o(.text)
+    .text                                    0x000000cc   Section        0  heapauxi.o(.text)
     .ARM.__at_0x02FC                         0x000002fc   Section        4  startup_lpc17xx.o(.ARM.__at_0x02FC)
-    .mem                                     0x10000000   Section      121  startup_lpc17xx.o(.mem)
-    Best_times                               0x10000008   Data          32  startup_lpc17xx.o(.mem)
-    Failed_runs                              0x10000040   Data          32  startup_lpc17xx.o(.mem)
-    Heap_Mem                                 0x10000080   Data           0  startup_lpc17xx.o(HEAP)
-    Stack_Mem                                0x10000080   Data         512  startup_lpc17xx.o(STACK)
-    HEAP                                     0x10000080   Section        0  startup_lpc17xx.o(HEAP)
-    STACK                                    0x10000080   Section      512  startup_lpc17xx.o(STACK)
-    __initial_sp                             0x10000280   Data           0  startup_lpc17xx.o(STACK)
+    .text                                    0x00000300   Section     8436  startup_lpc17xx.o(.text)
+    Best_times                               0x00001354   Data          32  startup_lpc17xx.o(.text)
+    Failed_runs                              0x0000138c   Data          32  startup_lpc17xx.o(.text)
+    Heap_Mem                                 0x10000000   Data           0  startup_lpc17xx.o(HEAP)
+    Stack_Mem                                0x10000000   Data         512  startup_lpc17xx.o(STACK)
+    HEAP                                     0x10000000   Section        0  startup_lpc17xx.o(HEAP)
+    STACK                                    0x10000000   Section      512  startup_lpc17xx.o(STACK)
+    __initial_sp                             0x10000200   Data           0  startup_lpc17xx.o(STACK)
 
     Global Symbols
 
@@ -120,55 +117,55 @@ Image Symbol Table
     BuildAttributes$$THM_ISAv4$P$D$K$B$S$PE$A:L22UL41UL21$X:L11$S22US41US21$IEEE1$IW$~IW$USESV6$~STKCKD$USESV7$~SHL$OSPACE$ROPI$EBA8$STANDARDLIB$REQ8$PRES8$EABIv2 0x00000000   Number         0  anon$$obj.o ABSOLUTE
     __Vectors                                0x00000000   Data           4  startup_lpc17xx.o(RESET)
     __sigvec_lookup                           - Undefined Weak Reference
-    Reset_Handler                            0x000000cd   Thumb Code    68  startup_lpc17xx.o(.text)
-    NMI_Handler                              0x00000111   Thumb Code     2  startup_lpc17xx.o(.text)
-    HardFault_Handler                        0x00000113   Thumb Code     2  startup_lpc17xx.o(.text)
-    MemManage_Handler                        0x00000115   Thumb Code     2  startup_lpc17xx.o(.text)
-    BusFault_Handler                         0x00000117   Thumb Code     2  startup_lpc17xx.o(.text)
-    UsageFault_Handler                       0x00000119   Thumb Code     2  startup_lpc17xx.o(.text)
-    SVC_Handler                              0x0000011b   Thumb Code     2  startup_lpc17xx.o(.text)
-    DebugMon_Handler                         0x0000011d   Thumb Code     2  startup_lpc17xx.o(.text)
-    PendSV_Handler                           0x0000011f   Thumb Code     2  startup_lpc17xx.o(.text)
-    SysTick_Handler                          0x00000121   Thumb Code     2  startup_lpc17xx.o(.text)
-    ADC_IRQHandler                           0x00000123   Thumb Code     0  startup_lpc17xx.o(.text)
-    BOD_IRQHandler                           0x00000123   Thumb Code     0  startup_lpc17xx.o(.text)
-    CANActivity_IRQHandler                   0x00000123   Thumb Code     0  startup_lpc17xx.o(.text)
-    CAN_IRQHandler                           0x00000123   Thumb Code     0  startup_lpc17xx.o(.text)
-    DMA_IRQHandler                           0x00000123   Thumb Code     0  startup_lpc17xx.o(.text)
-    EINT0_IRQHandler                         0x00000123   Thumb Code     0  startup_lpc17xx.o(.text)
-    EINT1_IRQHandler                         0x00000123   Thumb Code     0  startup_lpc17xx.o(.text)
-    EINT2_IRQHandler                         0x00000123   Thumb Code     0  startup_lpc17xx.o(.text)
-    EINT3_IRQHandler                         0x00000123   Thumb Code     0  startup_lpc17xx.o(.text)
-    ENET_IRQHandler                          0x00000123   Thumb Code     0  startup_lpc17xx.o(.text)
-    I2C0_IRQHandler                          0x00000123   Thumb Code     0  startup_lpc17xx.o(.text)
-    I2C1_IRQHandler                          0x00000123   Thumb Code     0  startup_lpc17xx.o(.text)
-    I2C2_IRQHandler                          0x00000123   Thumb Code     0  startup_lpc17xx.o(.text)
-    I2S_IRQHandler                           0x00000123   Thumb Code     0  startup_lpc17xx.o(.text)
-    MCPWM_IRQHandler                         0x00000123   Thumb Code     0  startup_lpc17xx.o(.text)
-    PLL0_IRQHandler                          0x00000123   Thumb Code     0  startup_lpc17xx.o(.text)
-    PLL1_IRQHandler                          0x00000123   Thumb Code     0  startup_lpc17xx.o(.text)
-    PWM1_IRQHandler                          0x00000123   Thumb Code     0  startup_lpc17xx.o(.text)
-    QEI_IRQHandler                           0x00000123   Thumb Code     0  startup_lpc17xx.o(.text)
-    RIT_IRQHandler                           0x00000123   Thumb Code     0  startup_lpc17xx.o(.text)
-    RTC_IRQHandler                           0x00000123   Thumb Code     0  startup_lpc17xx.o(.text)
-    SPI_IRQHandler                           0x00000123   Thumb Code     0  startup_lpc17xx.o(.text)
-    SSP0_IRQHandler                          0x00000123   Thumb Code     0  startup_lpc17xx.o(.text)
-    SSP1_IRQHandler                          0x00000123   Thumb Code     0  startup_lpc17xx.o(.text)
-    TIMER0_IRQHandler                        0x00000123   Thumb Code     0  startup_lpc17xx.o(.text)
-    TIMER1_IRQHandler                        0x00000123   Thumb Code     0  startup_lpc17xx.o(.text)
-    TIMER2_IRQHandler                        0x00000123   Thumb Code     0  startup_lpc17xx.o(.text)
-    TIMER3_IRQHandler                        0x00000123   Thumb Code     0  startup_lpc17xx.o(.text)
-    UART0_IRQHandler                         0x00000123   Thumb Code     0  startup_lpc17xx.o(.text)
-    UART1_IRQHandler                         0x00000123   Thumb Code     0  startup_lpc17xx.o(.text)
-    UART2_IRQHandler                         0x00000123   Thumb Code     0  startup_lpc17xx.o(.text)
-    UART3_IRQHandler                         0x00000123   Thumb Code     0  startup_lpc17xx.o(.text)
-    USBActivity_IRQHandler                   0x00000123   Thumb Code     0  startup_lpc17xx.o(.text)
-    USB_IRQHandler                           0x00000123   Thumb Code     0  startup_lpc17xx.o(.text)
-    WDT_IRQHandler                           0x00000123   Thumb Code     0  startup_lpc17xx.o(.text)
-    __user_initial_stackheap                 0x00000125   Thumb Code     0  startup_lpc17xx.o(.text)
-    __use_two_region_memory                  0x00000145   Thumb Code     2  heapauxi.o(.text)
-    __rt_heap_escrow$2region                 0x00000147   Thumb Code     2  heapauxi.o(.text)
-    __rt_heap_expand$2region                 0x00000149   Thumb Code     2  heapauxi.o(.text)
+    __use_two_region_memory                  0x000000cd   Thumb Code     2  heapauxi.o(.text)
+    __rt_heap_escrow$2region                 0x000000cf   Thumb Code     2  heapauxi.o(.text)
+    __rt_heap_expand$2region                 0x000000d1   Thumb Code     2  heapauxi.o(.text)
+    Reset_Handler                            0x00000301   Thumb Code    76  startup_lpc17xx.o(.text)
+    NMI_Handler                              0x000023c7   Thumb Code     2  startup_lpc17xx.o(.text)
+    HardFault_Handler                        0x000023c9   Thumb Code     2  startup_lpc17xx.o(.text)
+    MemManage_Handler                        0x000023cb   Thumb Code     2  startup_lpc17xx.o(.text)
+    BusFault_Handler                         0x000023cd   Thumb Code     2  startup_lpc17xx.o(.text)
+    UsageFault_Handler                       0x000023cf   Thumb Code     2  startup_lpc17xx.o(.text)
+    SVC_Handler                              0x000023d1   Thumb Code     2  startup_lpc17xx.o(.text)
+    DebugMon_Handler                         0x000023d3   Thumb Code     2  startup_lpc17xx.o(.text)
+    PendSV_Handler                           0x000023d5   Thumb Code     2  startup_lpc17xx.o(.text)
+    SysTick_Handler                          0x000023d7   Thumb Code     2  startup_lpc17xx.o(.text)
+    ADC_IRQHandler                           0x000023d9   Thumb Code     0  startup_lpc17xx.o(.text)
+    BOD_IRQHandler                           0x000023d9   Thumb Code     0  startup_lpc17xx.o(.text)
+    CANActivity_IRQHandler                   0x000023d9   Thumb Code     0  startup_lpc17xx.o(.text)
+    CAN_IRQHandler                           0x000023d9   Thumb Code     0  startup_lpc17xx.o(.text)
+    DMA_IRQHandler                           0x000023d9   Thumb Code     0  startup_lpc17xx.o(.text)
+    EINT0_IRQHandler                         0x000023d9   Thumb Code     0  startup_lpc17xx.o(.text)
+    EINT1_IRQHandler                         0x000023d9   Thumb Code     0  startup_lpc17xx.o(.text)
+    EINT2_IRQHandler                         0x000023d9   Thumb Code     0  startup_lpc17xx.o(.text)
+    EINT3_IRQHandler                         0x000023d9   Thumb Code     0  startup_lpc17xx.o(.text)
+    ENET_IRQHandler                          0x000023d9   Thumb Code     0  startup_lpc17xx.o(.text)
+    I2C0_IRQHandler                          0x000023d9   Thumb Code     0  startup_lpc17xx.o(.text)
+    I2C1_IRQHandler                          0x000023d9   Thumb Code     0  startup_lpc17xx.o(.text)
+    I2C2_IRQHandler                          0x000023d9   Thumb Code     0  startup_lpc17xx.o(.text)
+    I2S_IRQHandler                           0x000023d9   Thumb Code     0  startup_lpc17xx.o(.text)
+    MCPWM_IRQHandler                         0x000023d9   Thumb Code     0  startup_lpc17xx.o(.text)
+    PLL0_IRQHandler                          0x000023d9   Thumb Code     0  startup_lpc17xx.o(.text)
+    PLL1_IRQHandler                          0x000023d9   Thumb Code     0  startup_lpc17xx.o(.text)
+    PWM1_IRQHandler                          0x000023d9   Thumb Code     0  startup_lpc17xx.o(.text)
+    QEI_IRQHandler                           0x000023d9   Thumb Code     0  startup_lpc17xx.o(.text)
+    RIT_IRQHandler                           0x000023d9   Thumb Code     0  startup_lpc17xx.o(.text)
+    RTC_IRQHandler                           0x000023d9   Thumb Code     0  startup_lpc17xx.o(.text)
+    SPI_IRQHandler                           0x000023d9   Thumb Code     0  startup_lpc17xx.o(.text)
+    SSP0_IRQHandler                          0x000023d9   Thumb Code     0  startup_lpc17xx.o(.text)
+    SSP1_IRQHandler                          0x000023d9   Thumb Code     0  startup_lpc17xx.o(.text)
+    TIMER0_IRQHandler                        0x000023d9   Thumb Code     0  startup_lpc17xx.o(.text)
+    TIMER1_IRQHandler                        0x000023d9   Thumb Code     0  startup_lpc17xx.o(.text)
+    TIMER2_IRQHandler                        0x000023d9   Thumb Code     0  startup_lpc17xx.o(.text)
+    TIMER3_IRQHandler                        0x000023d9   Thumb Code     0  startup_lpc17xx.o(.text)
+    UART0_IRQHandler                         0x000023d9   Thumb Code     0  startup_lpc17xx.o(.text)
+    UART1_IRQHandler                         0x000023d9   Thumb Code     0  startup_lpc17xx.o(.text)
+    UART2_IRQHandler                         0x000023d9   Thumb Code     0  startup_lpc17xx.o(.text)
+    UART3_IRQHandler                         0x000023d9   Thumb Code     0  startup_lpc17xx.o(.text)
+    USBActivity_IRQHandler                   0x000023d9   Thumb Code     0  startup_lpc17xx.o(.text)
+    USB_IRQHandler                           0x000023d9   Thumb Code     0  startup_lpc17xx.o(.text)
+    WDT_IRQHandler                           0x000023d9   Thumb Code     0  startup_lpc17xx.o(.text)
+    __user_initial_stackheap                 0x000023dd   Thumb Code     0  startup_lpc17xx.o(.text)
 
 
 
@@ -176,34 +173,32 @@ Image Symbol Table
 
 Memory Map of the image
 
-  Image Entry point : 0x000000cd
+  Image Entry point : 0x00000301
 
-  Load Region LR_1 (Base: 0x00000000, Size: 0x0000037c, Max: 0xffffffff, ABSOLUTE)
+  Load Region LR_1 (Base: 0x00000000, Size: 0x000023f4, Max: 0xffffffff, ABSOLUTE)
 
-    Execution Region ER_RO (Exec base: 0x00000000, Load base: 0x00000000, Size: 0x00000300, Max: 0xffffffff, ABSOLUTE)
+    Execution Region ER_RO (Exec base: 0x00000000, Load base: 0x00000000, Size: 0x000023f4, Max: 0xffffffff, ABSOLUTE)
 
     Exec Addr    Load Addr    Size         Type   Attr      Idx    E Section Name        Object
 
     0x00000000   0x00000000   0x000000cc   Data   RO            3    RESET               startup_lpc17xx.o
-    0x000000cc   0x000000cc   0x00000078   Code   RO            6  * .text               startup_lpc17xx.o
-    0x00000144   0x00000144   0x00000006   Code   RO           30    .text               c_w.l(heapauxi.o)
-    0x0000014a   0x0000014a   0x000001b2   PAD
+    0x000000cc   0x000000cc   0x00000006   Code   RO           29    .text               c_w.l(heapauxi.o)
+    0x000000d2   0x000000d2   0x0000022a   PAD
     0x000002fc   0x000002fc   0x00000004   Code   RO            4    .ARM.__at_0x02FC    startup_lpc17xx.o
+    0x00000300   0x00000300   0x000020f4   Code   RO            5  * .text               startup_lpc17xx.o
 
 
-    Execution Region ER_RW (Exec base: 0x10000000, Load base: 0x00000300, Size: 0x0000007c, Max: 0xffffffff, ABSOLUTE)
+    Execution Region ER_RW (Exec base: 0x10000000, Load base: 0x000023f4, Size: 0x00000000, Max: 0xffffffff, ABSOLUTE)
+
+    **** No section assigned to this execution region ****
+
+
+    Execution Region ER_ZI (Exec base: 0x10000000, Load base: 0x000023f4, Size: 0x00000200, Max: 0xffffffff, ABSOLUTE)
 
     Exec Addr    Load Addr    Size         Type   Attr      Idx    E Section Name        Object
 
-    0x10000000   0x00000300   0x00000079   Data   RW            5    .mem                startup_lpc17xx.o
-
-
-    Execution Region ER_ZI (Exec base: 0x10000080, Load base: 0x0000037c, Size: 0x00000200, Max: 0xffffffff, ABSOLUTE)
-
-    Exec Addr    Load Addr    Size         Type   Attr      Idx    E Section Name        Object
-
-    0x10000080        -       0x00000000   Zero   RW            2    HEAP                startup_lpc17xx.o
-    0x10000080        -       0x00000200   Zero   RW            1    STACK               startup_lpc17xx.o
+    0x10000000        -       0x00000000   Zero   RW            2    HEAP                startup_lpc17xx.o
+    0x10000000        -       0x00000200   Zero   RW            1    STACK               startup_lpc17xx.o
 
 
 ==============================================================================
@@ -213,12 +208,12 @@ Image component sizes
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   Object Name
 
-       124         26        204        121        512       1060   startup_lpc17xx.o
+      8440       8342        204          0        512       1072   startup_lpc17xx.o
 
     ----------------------------------------------------------------------
-       124         26        204        124        512       1060   Object Totals
+      8440       8342        204          0        512       1072   Object Totals
          0          0          0          0          0          0   (incl. Generated)
-         0          0          0          3          0          0   (incl. Padding)
+         0          0          0          0          0          0   (incl. Padding)
 
     ----------------------------------------------------------------------
 
@@ -227,8 +222,8 @@ Image component sizes
          6          0          0          0          0        152   heapauxi.o
 
     ----------------------------------------------------------------------
-       440          0          0          0          0        152   Library Totals
-       434          0          0          0          0          0   (incl. Padding)
+       560          0          0          0          0        152   Library Totals
+       554          0          0          0          0          0   (incl. Padding)
 
     ----------------------------------------------------------------------
 
@@ -237,7 +232,7 @@ Image component sizes
          6          0          0          0          0        152   c_w.l
 
     ----------------------------------------------------------------------
-       440          0          0          0          0        152   Library Totals
+       560          0          0          0          0        152   Library Totals
 
     ----------------------------------------------------------------------
 
@@ -246,15 +241,15 @@ Image component sizes
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   
 
-       564         26        204        124        512       1212   Grand Totals
-       564         26        204        124        512       1212   ELF Image Totals
-       564         26        204        124          0          0   ROM Totals
+      9000       8342        204          0        512       1224   Grand Totals
+      9000       8342        204          0        512       1224   ELF Image Totals
+      9000       8342        204          0          0          0   ROM Totals
 
 ==============================================================================
 
-    Total RO  Size (Code + RO Data)                  768 (   0.75kB)
-    Total RW  Size (RW Data + ZI Data)               636 (   0.62kB)
-    Total ROM Size (Code + RO Data + RW Data)        892 (   0.87kB)
+    Total RO  Size (Code + RO Data)                 9204 (   8.99kB)
+    Total RW  Size (RW Data + ZI Data)               512 (   0.50kB)
+    Total ROM Size (Code + RO Data + RW Data)       9204 (   8.99kB)
 
 ==============================================================================
 

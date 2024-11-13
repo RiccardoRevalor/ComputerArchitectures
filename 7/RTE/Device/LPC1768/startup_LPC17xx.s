@@ -120,21 +120,6 @@ CRP_Key         DCD     0xFFFFFFFF
                 
 					
 					
-				AREA |.mem|, READWRITE, ALIGN=2
-				; Data section with alignment and boundary
-				SPACE 4096
-
-Days			DCB     0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07
-
-Best_times		DCD     0x06, 1300, 0x03, 1700, 0x02, 1200, 0x04, 1900
-				DCD     0x05, 1110, 0x01, 1670, 0x07, 1000
-
-Failed_runs		DCD     0x02, 50, 0x05, 30, 0x06, 100, 0x01, 58
-				DCD     0x03, 40, 0x04, 90, 0x07, 25
-
-Num_days		DCB     7
-
-				SPACE 4096
 					
 					
 					
@@ -147,13 +132,13 @@ Reset_Handler   PROC
                 EXPORT  Reset_Handler             [WEAK]
 				
 				ldr r0, =Best_times					;pointer to the Best_times table
-				ldr r1, =Failed_runs				;pointer to the Failed_runs table
+				;PRIMA ldr r1, =Failed_runs				;pointer to the Failed_runs table
 				mov r2, #1300 		
 				;clear r11 and r10
 				mov r11, #0
 				mov r10, #0
 				add r4, r0, #56						;end adx of Best_times table (14 elements * 4 bytes each)
-				add r5, r1, #56						;end adx of Failed_runs table
+				;PRIMA add r5, r1, #56						;end adx of Failed_runs table
 
 loop
 				;load values
@@ -166,6 +151,9 @@ loop
 				;search fo failed runs associated to day in register r6
 				add r11, r11, #1					; + 1 day with score >= 1300
 				;mov r3, #0							; counter for failed runs
+				;DOPO
+				ldr r1, =Failed_runs				;pointer to the Failed_runs table
+				add r5, r1, #56						;end adx of Failed_runs table
 				
 search_failed_runs
 				ldr r12, [r1], #4					;load day
@@ -187,7 +175,25 @@ continue_loop
 				bne loop
 				
 				b .
+				ltorg
                 ENDP
+					
+				; Data section with alignment and boundary
+				ALIGN 2
+				SPACE 4096
+
+Days			DCB     0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07
+
+Best_times		DCD     0x06, 1300, 0x03, 1700, 0x02, 1200, 0x04, 1900
+				DCD     0x05, 1110, 0x01, 1670, 0x07, 1000
+
+Failed_runs		DCD     0x02, 50, 0x05, 30, 0x06, 100, 0x01, 58
+				DCD     0x03, 40, 0x04, 90, 0x07, 25
+
+Num_days		DCB     7
+
+				SPACE 4096
+				ALIGN 2
 
 
 ; Dummy Exception Handlers (infinite loops which can be modified)
