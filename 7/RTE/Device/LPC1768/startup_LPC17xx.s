@@ -119,7 +119,19 @@ CRP_Key         DCD     0xFFFFFFFF
 
                 
 					
-					
+				AREA    MyData, DATA, READWRITE
+					ALIGN 2
+Best_times2 		DCD     0x06, 1300, 0x03, 1700, 0x02, 1200, 0x04, 1900
+					DCD     0x05, 1110, 0x01, 1670, 0x07, 1000
+	
+Failed_runs2       	DCD     0x02, 50, 0x05, 30, 0x06, 100, 0x01, 58
+					DCD     0x03, 40, 0x04, 90, 0x07, 25
+
+Best_times_ordered 	DCD     0, 0, 0, 0, 0, 0, 0
+Failed_runs_ordered DCD    0, 0, 0, 0, 0, 0, 0
+
+temp_buffer       	DCD     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+					ALIGN 2
 					
 					
 					
@@ -130,6 +142,9 @@ CRP_Key         DCD     0xFFFFFFFF
 
 Reset_Handler   PROC
                 EXPORT  Reset_Handler             [WEAK]
+					
+				;use this to jmp to task 2 without exeuting the fist one
+				b task_2
 				
 				ldr r0, =Best_times					;pointer to the Best_times table
 				;PRIMA ldr r1, =Failed_runs				;pointer to the Failed_runs table
@@ -173,6 +188,161 @@ continue_loop
 				;check end of outer loop
 				cmp r0, r5
 				bne loop
+				
+				
+				
+				
+				
+				
+task_2				
+				;TASK 2
+				ldr r0, =Best_times         ; R0 -> Base di Best_times
+				ldr r1, =Failed_runs        ; R1 -> Base di Failed_runs
+				ldr r2, =Best_times_ordered ; R2 -> Output ordinato Best_times_ordered
+				ldr r3, =Failed_runs_ordered ; R3 -> Output ordinato Failed_runs_ordered
+				mov r4, #6						;N days
+				
+				;sort best times
+				BL sort_best_times
+				
+				;determine theb worst best time day
+				bl worst_best_time
+				
+				
+				;sort failed runs
+				bl sort_failed_runs
+				
+				
+				b .
+
+;SUBS TO SORT AND STORE BES TIMES		
+sort_best_times	push {r4, lr}
+				
+				;Store all the value from the read-only vector to the writable buffer
+				ldr r5, =temp_buffer
+store_in_buffer_1
+				ldr r6, [r0], #4		;load day
+				str r6, [r5], #4			;store day in buffer
+				ldr r6, [r0], #4		;load score
+				str r6, [r5], #4		; store score in buffer
+				subs r4, r4, #1
+				bne store_in_buffer_1
+				
+				;call the bubble sort algorithm
+				mov r4, #6
+				bl bubble_sort
+				
+				
+				;after the descending sort, save all the days in the final destination which is the Best_times_ordered
+store_best_times
+				;goes through the buffer by 8 in 8 to avoid saving also the score
+				ldr r5, =temp_buffer
+				ldr r6, [r5], #8
+				str r6, [r2], #4	;in the Best_times_ordered you just save the days so you jump 4 by 4
+				subs r4, r4, #1
+				bne store_best_times
+				
+				;end of function
+				pop {r4, pc}
+				
+				
+				
+;SUBS TO SORT AND STORE FAILED_RUNS				
+				
+sort_failed_runs
+				push {r4, lr}
+				ldr r5, =temp_buffer
+				
+store_in_buffer_2
+				ldr r6, [r1], #4		;load day
+				str r6, [r5], #4		;store day in buffer
+				ldr r6, [r1], #4		;load score
+				str r6, [r5], #4		; store score in buffer
+				subs r4, r4, #1
+				bne store_in_buffer_2
+				
+				;call the bubble sort algorithm
+				mov r4, #6
+				bl bubble_sort
+				
+store_failed_runs
+				;goes through the buffer by 8 in 8 to avoid saving also the score
+				ldr r5, =temp_buffer
+				ldr r6, [r5], #8
+				str r6, [r3], #4	;in the Best_times_ordered you just save the days so you jump 4 by 4
+				subs r4, r4, #1
+				bne store_failed_runs
+				
+				;end of function
+				pop {r4, pc}
+
+
+
+				
+
+
+;BUBBLE SORT ALGORITHM
+				
+				
+bubble_sort
+				push {r4, lr}
+				;sort on the temp buffer
+				;ldr r5, =temp_buffer
+				;add r5, r5, #4
+sort_outer		
+				ldr r5, =temp_buffer
+				add r5, r5, #4
+				mov r8, #0			;0 = no swaps, 1 = a swap happened
+				mov r9,  r4			;num of items (7 at the beginning)
+sort_inner
+				ldr r6, [r5, #0]	;first score
+				ldr r7, [r5, #8]	;second score
+				cmp r6, r7
+				bhs no_swap			;r6 <= r7
+				
+				;do the swap of the scores and the days
+				;swap scores first
+				str r6, [r5, #8]	;first scores goes in the place of second score
+				str r7, [r5], #0	;and viceversa
+				
+				;load days
+				ldr r6, [r5, #-4]	;first day
+				ldr r7, [r5, #4]	;second day
+				;swap first day with second day
+				str r7, [r5, #-4]
+				str r6, [r5, #4]
+				
+				;set the change boolean value to true (1)
+				mov r8, #1
+
+no_swap
+				;increment r5 by 8 to analyze the second pair
+				add r5, r5, #8
+				;decrement the element counter
+				subs r9, r9, #1
+				bne sort_inner		;if i > 0 continue inner loop
+				
+				;check if there has been a swap
+				cmp r8, #1
+				beq sort_outer		;if swap == True continue outer loop
+				
+				pop {r4, pc}
+				
+				
+worst_best_time
+				push {lr}
+				;worst best time day is located at the last index of the Best_times_ordered
+				ldr r5, =Best_times_ordered
+				ldr r11, [r5, #24] ;worst day				
+				pop{pc}
+				
+				
+				
+				
+				
+				
+				
+				
 				
 				b .
 				ltorg

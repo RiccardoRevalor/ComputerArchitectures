@@ -9,7 +9,7 @@ License Information: Riccardo Revalor, Politecnico di Torino, LIC=----
  
 Tool Versions:
 Toolchain:       MDK-Lite  Version: 5.41.0.0
-Toolchain Path:  C:\Users\rpix1\AppData\Local\Keil_v5\ARM\ARMCLANG\Bin
+Toolchain Path:  D:\ARM Keil\ARM\ARMCLANG\Bin
 C Compiler:      ArmClang.exe V6.22
 Assembler:       Armasm.exe V6.22
 Linker/Locator:  ArmLink.exe V6.22
@@ -21,18 +21,18 @@ Target DLL:      UL2CM3.DLL V1.164.14.0
 Dialog DLL:      TCM.DLL V1.56.4.0
  
 <h2>Project:</h2>
-D:\MAGISTRALE\ANNO 1\ComputerArchitectures\7\lab7.uvprojx
+R:\MAGISTRALE\ANNO 1\COMPUTER ARCHITECTURES\LABS\7\lab7.uvprojx
 Project File Date:  11/13/2024
 
 <h2>Output:</h2>
-*** Using Compiler 'V6.22', folder: 'C:\Users\rpix1\AppData\Local\Keil_v5\ARM\ARMCLANG\Bin'
+*** Using Compiler 'V6.22', folder: 'D:\ARM Keil\ARM\ARMCLANG\Bin'
 Build target 'Target_1'
-"RTE/Device/LPC1768/startup_LPC17xx.s", line 187: Warning: A1581W: Added 1 bytes of padding at address 0x1053
-  187 00001054 Best_times  DCD     0x06, 1300, 0x03, 1700, 0x02, 1200, 0x04, 1900
+"RTE/Device/LPC1768/startup_LPC17xx.s", line 357: Warning: A1581W: Added 1 bytes of padding at address 0x112b
+  357 0000112c Best_times  DCD     0x06, 1300, 0x03, 1700, 0x02, 1200, 0x04, 1900
 0 Errors, 1 Warning
 assembling startup_LPC17xx.s...
 linking...
-Program Size: Code=9000 RO-data=204 RW-data=0 ZI-data=512  
+Program Size: Code=9216 RO-data=204 RW-data=224 ZI-data=512  
 ".\Objects\lab7.axf" - 0 Error(s), 0 Warning(s).
 
 <h2>Software Packages used:</h2>
@@ -52,17 +52,17 @@ Package Vendor: Keil
 <h2>Collection of Component include folders:</h2>
   ./RTE/Device/LPC1768
   ./RTE/_Target_1
-  C:/Users/rpix1/AppData/Local/Arm/Packs/ARM/CMSIS/6.1.0/CMSIS/Core/Include
-  C:/Users/rpix1/AppData/Local/Arm/Packs/Keil/LPC1700_DFP/2.7.1/Device/Include
+  D:/ARM Keil/Packs/ARM/CMSIS/6.1.0/CMSIS/Core/Include
+  D:/ARM Keil/Packs/Keil/LPC1700_DFP/2.7.1/Device/Include
 
 <h2>Collection of Component Files used:</h2>
 
    * Component: ARM::CMSIS:CORE@6.1.0
 
    * Component: Keil::Device:Startup@1.0.0
-      Source file:   Device/Source/ARM/startup_LPC17xx.s
-      Include file:  Device/Include/LPC17xx.h
       Source file:   Device/Source/system_LPC17xx.c
+      Include file:  Device/Include/LPC17xx.h
+      Source file:   Device/Source/ARM/startup_LPC17xx.s
       Include file:  RTE_Driver/Config/RTE_Device.h
 Build Time Elapsed:  00:00:01
 </pre>
