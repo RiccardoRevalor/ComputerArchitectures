@@ -200,10 +200,10 @@ task_2
 				ldr r1, =Failed_runs        ; R1 -> Base di Failed_runs
 				ldr r2, =Best_times_ordered ; R2 -> Output ordinato Best_times_ordered
 				ldr r3, =Failed_runs_ordered ; R3 -> Output ordinato Failed_runs_ordered
-				mov r4, #6						;N days
+				mov r4, #7					;N days
 				
 				;sort best times
-				BL sort_best_times
+				bl sort_best_times
 				
 				;determine theb worst best time day
 				bl worst_best_time
@@ -230,13 +230,14 @@ store_in_buffer_1
 				
 				;call the bubble sort algorithm
 				mov r4, #6
+				ldr r5, =temp_buffer
 				bl bubble_sort
+				mov r4, #7
 				
 				
 				;after the descending sort, save all the days in the final destination which is the Best_times_ordered
 store_best_times
 				;goes through the buffer by 8 in 8 to avoid saving also the score
-				ldr r5, =temp_buffer
 				ldr r6, [r5], #8
 				str r6, [r2], #4	;in the Best_times_ordered you just save the days so you jump 4 by 4
 				subs r4, r4, #1
@@ -263,11 +264,12 @@ store_in_buffer_2
 				
 				;call the bubble sort algorithm
 				mov r4, #6
+				ldr r5, =temp_buffer
 				bl bubble_sort
+				mov r4, #7
 				
 store_failed_runs
 				;goes through the buffer by 8 in 8 to avoid saving also the score
-				ldr r5, =temp_buffer
 				ldr r6, [r5], #8
 				str r6, [r3], #4	;in the Best_times_ordered you just save the days so you jump 4 by 4
 				subs r4, r4, #1
@@ -285,7 +287,7 @@ store_failed_runs
 				
 				
 bubble_sort
-				push {r4, lr}
+				push {r4, r5, lr}
 				;sort on the temp buffer
 				;ldr r5, =temp_buffer
 				;add r5, r5, #4
@@ -298,22 +300,22 @@ sort_inner
 				ldr r6, [r5, #0]	;first score
 				ldr r7, [r5, #8]	;second score
 				cmp r6, r7
-				bhs no_swap			;r6 <= r7
+				bhs no_swap			;no swap if r6 >= r7...otherwise swap
 				
 				;do the swap of the scores and the days
 				;swap scores first
 				str r6, [r5, #8]	;first scores goes in the place of second score
-				str r7, [r5], #0	;and viceversa
+				str r7, [r5, #0]	;and viceversa
 				
 				;load days
 				ldr r6, [r5, #-4]	;first day
 				ldr r7, [r5, #4]	;second day
 				;swap first day with second day
-				str r7, [r5, #-4]
 				str r6, [r5, #4]
+				str r7, [r5, #-4]
 				
 				;set the change boolean value to true (1)
-				mov r8, #1
+				mov r8, #1			;THERE WAS A SWAP
 
 no_swap
 				;increment r5 by 8 to analyze the second pair
@@ -326,7 +328,7 @@ no_swap
 				cmp r8, #1
 				beq sort_outer		;if swap == True continue outer loop
 				
-				pop {r4, pc}
+				pop {r4, r5, pc}
 				
 				
 worst_best_time
