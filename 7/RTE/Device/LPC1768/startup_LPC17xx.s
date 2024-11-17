@@ -116,7 +116,8 @@ __Vectors       DCD     __initial_sp              ; Top of Stack
 CRP_Key         DCD     0xFFFFFFFF
                 ENDIF
 
-				
+	
+	
 				AREA    MyData, DATA, READWRITE
 					ALIGN 2
 Best_times2 		DCD     0x06, 1300, 0x03, 1700, 0x02, 1200, 0x04, 1900
@@ -133,7 +134,6 @@ temp_buffer       	DCD     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 					ALIGN 2
 					
 					
-					
 				AREA    |.text|, CODE, READONLY
 
 
@@ -143,6 +143,7 @@ Reset_Handler   PROC
                 EXPORT  Reset_Handler             [WEAK]
 					
 				;use this to jmp to task 2 without exeuting the fist one
+				;ldr r9, =prova
 				b task_2
 				
 				ldr r0, =Best_times					;pointer to the Best_times table
