@@ -116,9 +116,7 @@ __Vectors       DCD     __initial_sp              ; Top of Stack
 CRP_Key         DCD     0xFFFFFFFF
                 ENDIF
 
-
-                
-					
+				
 				AREA    MyData, DATA, READWRITE
 					ALIGN 2
 Best_times2 		DCD     0x06, 1300, 0x03, 1700, 0x02, 1200, 0x04, 1900
@@ -131,6 +129,7 @@ Best_times_ordered 	DCD     0, 0, 0, 0, 0, 0, 0
 Failed_runs_ordered DCD    0, 0, 0, 0, 0, 0, 0
 
 temp_buffer       	DCD     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+
 					ALIGN 2
 					
 					
