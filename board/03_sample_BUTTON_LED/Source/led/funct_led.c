@@ -20,6 +20,8 @@ extern unsigned char led_value;
   Function that turns on requested LED
  *----------------------------------------------------------------------------*/
 void LED_On(unsigned int num) {
+	
+	
  
   LPC_GPIO2->FIOPIN |= led_mask[num];
 	led_value = LPC_GPIO2->FIOPIN;
