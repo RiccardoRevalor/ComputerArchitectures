@@ -156,10 +156,10 @@ Reset_Handler   PROC
 				;I write it A NEW C EMPTY FILE
 				;I use a folder to organize the code
 				;Source Group 1 is empty and can be used
-				;right click on it -> manage project items -> you can rename it in MY source files
+				;right click on Target_1 -> manage project items -> you can rename it in MY source files
                 ;I added the c_function.c in  thet folder
 				
-				;i HAVE DEFINE THE SQR ROT FUNC IN C
+				;I HAVE DEFINED THE SQR ROT FUNC IN C
 				
 				;I need to import its symbol
 				;Which one do I use?
@@ -182,7 +182,7 @@ Reset_Handler   PROC
 				;bl intSquareRoot
 				
 				;The function returns a value
-				;The standardxsays it to save in r0
+				;The standard says it to save in r0
 				;So now r0 = sqrt(38)
 				;R0 = SQRT(38) = 6
 				
@@ -191,7 +191,7 @@ Reset_Handler   PROC
 				LDR     R0, =__main
 				;YOU HAVE TO SET A BREAK POINT IN THE main in c
 				;BECAUSE __main is not visible while its being executed and you don't see it
-				;OTHERWISE, WE CAN ADD THE OPTIO run to main() in the debug tab to skip reset handler and start from main
+				;OTHERWISE, WE CAN ADD THE OPTION run to main() in the debug tab to skip reset handler and start from main
                 BX      R0
 				b .
 				

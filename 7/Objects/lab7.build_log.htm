@@ -27,14 +27,12 @@ Project File Date:  11/13/2024
 <h2>Output:</h2>
 *** Using Compiler 'V6.22', folder: 'D:\ARM Keil\ARM\ARMCLANG\Bin'
 Build target 'Target_1'
-"RTE/Device/LPC1768/startup_LPC17xx.s", line 350: Warning: A1581W: Added 2 bytes of padding at address 0x10e
-  350 00000110     ltorg
-"RTE/Device/LPC1768/startup_LPC17xx.s", line 359: Warning: A1581W: Added 1 bytes of padding at address 0x1133
-  359 00001134 Best_times  DCD     0x06, 1300, 0x03, 1700, 0x02, 1200, 0x04, 1900
-0 Errors, 2 Warnings
+"RTE/Device/LPC1768/startup_LPC17xx.s", line 358: Warning: A1581W: Added 1 bytes of padding at address 0x112f
+  358 00001130 Best_times  DCD     0x06, 1300, 0x03, 1700, 0x02, 1200, 0x04, 1900
+0 Errors, 1 Warning
 assembling startup_LPC17xx.s...
 linking...
-Program Size: Code=9224 RO-data=204 RW-data=224 ZI-data=512  
+Program Size: Code=9220 RO-data=204 RW-data=224 ZI-data=512  
 ".\Objects\lab7.axf" - 0 Error(s), 0 Warning(s).
 
 <h2>Software Packages used:</h2>
@@ -62,9 +60,9 @@ Package Vendor: Keil
    * Component: ARM::CMSIS:CORE@6.1.0
 
    * Component: Keil::Device:Startup@1.0.0
-      Include file:  Device/Include/LPC17xx.h
       Source file:   Device/Source/ARM/startup_LPC17xx.s
       Source file:   Device/Source/system_LPC17xx.c
+      Include file:  Device/Include/LPC17xx.h
       Include file:  RTE_Driver/Config/RTE_Device.h
 Build Time Elapsed:  00:00:01
 </pre>

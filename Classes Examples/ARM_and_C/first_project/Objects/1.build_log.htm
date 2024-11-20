@@ -27,17 +27,10 @@ Project File Date:  11/18/2024
 <h2>Output:</h2>
 *** Using Compiler 'V6.22', folder: 'D:\ARM Keil\ARM\ARMCLANG\Bin'
 Build target 'Target_1'
-c_functions.c(54): warning: variable 'sumFirstAndLast' set but not used [-Wunused-but-set-variable]
-   54 |         volatile int sumFirstAndLast;
-      |                      ^
-c_functions.c(68): warning: variable 'len3_v' set but not used [-Wunused-but-set-variable]
-   68 |         volatile int len3_v;
-      |                      ^
-2 warnings generated.
-compiling c_functions.c...
+assembling startup_LPC17xx.s...
 linking...
-Program Size: Code=656 RO-data=252 RW-data=0 ZI-data=608  
-".\Objects\1.axf" - 0 Error(s), 2 Warning(s).
+Program Size: Code=2884 RO-data=252 RW-data=0 ZI-data=608  
+".\Objects\1.axf" - 0 Error(s), 0 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -64,9 +57,9 @@ Package Vendor: Keil
    * Component: ARM::CMSIS:CORE@6.1.0
 
    * Component: Keil::Device:Startup@1.0.0
-      Source file:   Device/Source/ARM/startup_LPC17xx.s
-      Include file:  Device/Include/LPC17xx.h
       Source file:   Device/Source/system_LPC17xx.c
+      Include file:  Device/Include/LPC17xx.h
+      Source file:   Device/Source/ARM/startup_LPC17xx.s
       Include file:  RTE_Driver/Config/RTE_Device.h
 Build Time Elapsed:  00:00:01
 </pre>

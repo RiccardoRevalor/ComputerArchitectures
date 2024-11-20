@@ -39,7 +39,7 @@ int main(void){
 	2 strings, 1 not initialized
 	I wanna take three characters from the first one four ch from the second one
 	and concatenate them into the third string, by calling the concatenateString function
-	This function return the numbers of copied chars (3+4=7 but it could be less if we reach MAX_LENGTH of string3)
+	This function returns the numbers of copied chars (3+4=7 but it could be less if we reach MAX_LENGTH of string3)
 	Its a function written in another file so I need its prototype (extern)
 	*/
 	//the compiler loads the adx of the strings in r0 and the stores r0 into te stack
