@@ -116,9 +116,9 @@ Reset_Handler   PROC
 				LDR r0, =__main
 				bx r0
 				
-				;MOV		R0, #3
-				;MSR		CONTROL, R0
-				;LDR		SP, =Stack_Mem
+				MOV		R0, #3
+				MSR		CONTROL, R0
+				LDR		SP, =Stack_Mem
 				
 				;nop
 				
@@ -182,11 +182,46 @@ SVC_Handler     PROC
 				BIC R0, #0xFF000000 
 				LSR R0, #16
 				; your code here
-				cmp r0, #0x10
+				cmp r0, #0x15
 				bne uscita
-				nop
 				
-uscita			LDMFD SP!, {R0-R12, LR}
+				;function
+				mov r2, #0		;result
+				mov r3, #8		;counter
+				mov r4, r0	;10101
+				mov r10, #0
+				
+outer_loop		tst r4, #1
+				beq is_zero
+				
+				;it's zero
+				;repeat zero three times
+				ldr r9, =0x7
+				lsl r9, r10
+				orr r2, r2, r9
+				
+				b next_bit
+				
+				;it's one
+is_zero			ldr r9, =0x0
+				lsl r9, r10
+				orr r2, r2, r9
+				
+next_bit
+				add r10, r10, #3
+				lsr r4, #1
+				subs r3, r3, #1
+				
+				bne outer_loop
+				
+	
+				
+				
+			
+
+
+uscita			LDMFD SP!, {R0,R1, R3-R12, LR}
+				PUSH {R2}
 				BX LR
 				
                 ENDP

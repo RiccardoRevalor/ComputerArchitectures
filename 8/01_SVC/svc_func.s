@@ -3,7 +3,9 @@
 call_svc	PROC
 			
 			EXPORT call_svc
-			svc #10
+			svc #0x15
+			
+			BX LR
 			
 			ENDP
 			END
