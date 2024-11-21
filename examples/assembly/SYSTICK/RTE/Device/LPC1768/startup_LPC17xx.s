@@ -115,13 +115,6 @@ __Vectors       DCD     __initial_sp              ; Top of Stack
                 AREA    |.ARM.__at_0x02FC|, CODE, READONLY
 CRP_Key         DCD     0xFFFFFFFF
                 ENDIF
-					
-					
-				AREA myProcessStack, NOINIT, READWRITE
-				SPACE 400
-				;Implememnt PSP as a full descending stack
-				;the lable points at the end of this area
-INITIAL_SP
 
 
                 AREA    |.text|, CODE, READONLY
@@ -129,36 +122,98 @@ INITIAL_SP
 
 ; Reset Handler
 
-
 Reset_Handler   PROC
                 EXPORT  Reset_Handler             [WEAK]
-					
-					
-					
-				;initialize PSP
-				ldr r2, =INITIAL_SP ;I've created this label (look at the top)
-				msr PSP, r2
+				
+				;WE can modify bits on the control and status reg to set the behavior of the timer
+				;bit 0 starts the systick timer
+				;bit 1 to generated interrupts after times has reached tha value 0
+				
+				;first I configure the control and status reg
+				;first STOP the timer before writing on the bits so the timer does not generated interrupts if the 
+				;timer actually reaches the new values set (unlucky case)
+				;You do so by writing zero on the Contro and Stat reg in bit 0
+				
+				;Then you write the desiderd interval in the reload value reg
+				
+				;Then you reset the SYSTICK timer counter in the current value reg
+				;If I write this register with any values I am resetting it !
+				;If I read it I get its content
 				
 				
-				;bus faults
-				mrs r0, CONTROL ; load control reg
-				orr r0, r0, #2 ; set the 2nd bit
+				;Then I start the timer writing 1 in bit 0 in the control and status reg
 				
-				;move to the control reg the value of r0
-				msr	CONTROL, r0
+				;The code is this:
 				
-				;use the PSP
-				; push a value
-				mov r1, #4
-				push {r1} ;I am pushing in PSP
+				;Stop the timer:
+				;Write the comntrol and status reg in bit 0 of it
+				LDR r0, =SYScontrolAndStatusReg
+				MOV r1, #0
+				STR r1, [r0] ; step 1 >> NOW THE TIMER HAS BEEN STOPPED
 				
-				;;MESSAGE: ACCESS VIOLATION AT ADX 0XFFFFFFFC: NO WRITE PERMISSION
-				;However I am not generating a bus fault because it is raised ONLY on the BOARD !!!!!
+				;Then I have to set the reload value reg 
+				;write in bit 0 of it 
+				LDR r0, =SYSreloadValueReg
+				LDR r1, =1023 ; example -> I want the timer to count from 1023 to 0 (decremented at each clock cycle)
+				; 1023 = 0x3FF in the Systick->LOAD
+				STR r1, [r0] ; step 2
 				
-				;ANYWAY,	HAVE A LOOK AT THE BusFault_Handler
+				;Then I wanna reset the current value register
+				;I can just write on this register to reset it
+				;The value I write IS NOT IMPORTANT, IT IS JUJST USED TO RESET THE REG
+				LDR r0, =SYScurrentValueReg
+				STR r1, [r0] ; step 3
 				
+				;START THE TIME
+				;WRITE 7 IN CONTROL AND STATUS REG
+				;7 IN BINARY IS 2_111
+				;so I set the three LSB to 1 so:
+				;bit 2 = 1 -> use processor clock
+				;bit 1 = 1 -> O wan the timer to generate an interrupot after it expires
+				;bit 0 = 0 -> I am starting the timer
+				LDR r0, =SYScontrolAndStatusReg
+				MOV r1, #7
+				STR r1, [r0] ; step 4
+				
+				; IN THE SYSTICK TIMER WINDOWS (CORE PHERIPERALS) THREE CHEKS ARE NOW ENABLED: ENABLE, CLKSOURCE TICKINT
+				;Now timer has started
+				;Example
+				
+				
+				;AT EACH INSTRUCTION NOW THE CURRENT VALUES (SYSTICK->VAL) IS DECREMENTED BY 1
+				mov r4, #0 ;AFTER THIS VALUE IS 0x3FD
+				mov r5, #0 ;AFTER THIS VALUE IS 0x3FC AND SO ON ....
+				
+				;I implememt a loop
+				
+timerLoop		add r5, r5, #1
+				;I have to use a register that it is not overwritten by other pieces of code in order to preserve its value
+				;r4 is modified only and only by the timer
+				cmp r4, #5
+				blt timerLoop
+				
+				;This looks life and infinite loop because R4 is not modified
+				;I modify r4 in the SYSTICK handler (see below)
+				
+				;So every after 1023 instructions the timer generates an interrupt
+				;The systick handler increments r4
+				;So we can expect that after this r4 contains 1
+				;then we come back to normnal code, r4 = 1 < 5 so we continue with the loop
+				;after 1023 we increase r4 again and so on
+				;at the end (after 5 * 1023 instr) we exit loop because r4 = 5
+				
+				;IMPORTANT
+				;Peripherals > Core > System tick timer to check the values of the memory mapped registers related to the timer
+				
+				;When we get here the timer is still running !
+				;WE exited from the timerLoop loop and we execute b . endlessly and the timer contines going because it has not been 
+				;switched off
                 b .
                 ENDP
+					
+SYScontrolAndStatusReg EQU 0xE000E010
+SYSreloadValueReg EQU 0xE000E014
+SYScurrentValueReg EQU 0xE000E018
 
 
 ; Dummy Exception Handlers (infinite loops which can be modified)
@@ -180,53 +235,7 @@ MemManage_Handler\
 BusFault_Handler\
                 PROC
                 EXPORT  BusFault_Handler          [WEAK]
-					
-				;IDEA: I should check the king of the reason
-				; BUS FAULT STAT REG ADX: 0xE000ED29 JUST 1 BYTE
-				ldr r0, =0xE000ED29
-				ldrb r1, [r0]
-				
-				;test bit number 4
-				
-				tst r1, 0x10
-				bne stack_pointer_problem
-				;test other bits ...
-				
                 B       .
-				
-stack_pointer_problem
-				; here I test another thing
-				; a bus fault can be PRECISE OR NOT PRECISE
-				; 1) if bus fault is PRECISE: the probkem was due to the last completed instruction
-				; I expect it weas precise because the last instruction generated the buf fault but there are otgher cases
-				; 2) but fault NOT PRECISE: if the adx of a write instructiomn nis wrong since that instr is buffered for a later 
-				;execution then when the bus fault is generated it is not associated to the last executed intr in the code
-				
-				; in this case it should be precise but i should CHECK IT
-				
-				;1) is the bus fault precise? How can I know it? I have to check but number 1 of the buf fault status register
-				
-				tst r1, #2 ;test bit 1
-				bne precise_fault
-				;otherwise: not precise fault...do other things
-				
-precise_fault
-				; can I retrieve the offending adx where I was pushing?
-				;can I retrieve the offending address??
-				;in order to do it I will check bit number 7 of the bus fault status register
-				
-				; if bit 7 == 1 --> I jump to another label to retrieve the address
-				tst r1, #0x80 ;in bin: 10000000
-				bne get_address
-				;otherwise..it's a problem ...
-				
-get_address
-				; get the address oif the bus fault address register
-				; bus fault address register: 0xE000ED38
-				ldr r2, =0xE000ED38
-				ldr r3, [r2]
-				;idea: check which is the problem related to this specific adx and solve it
-				
                 ENDP
 UsageFault_Handler\
                 PROC
@@ -246,9 +255,17 @@ PendSV_Handler  PROC
                 EXPORT  PendSV_Handler            [WEAK]
                 B       .
                 ENDP
+					
 SysTick_Handler PROC
                 EXPORT  SysTick_Handler           [WEAK]
-                B       .
+					
+				;SYSTICK HANDLER
+				
+				;modify r4
+				add r4, r4, #1 ; WE ADD 1 TO R4 EVERY 1023 CLOCK CYCLES
+				bx lr ; WE BRANCH BACK TO THE NORMAL CODE
+				;THESE 2 INSTR STILL ALSO DECREMENT THE CURRENT VALUE OF THE TIMER
+                ;B       .
                 ENDP
 
 Default_Handler PROC

@@ -50,6 +50,8 @@ __heap_limit
                 PRESERVE8
                 THUMB
 
+				AREA    my_sec, NOINIT, READWRITE
+copy_space		SPACE 56
 
 ; Vector Table Mapped to Address 0 at Reset
 
@@ -131,7 +133,9 @@ Reset_Handler   PROC
                 EXPORT  Reset_Handler             [WEAK]
 				LDR r0, =Num_days
 				LDR r2, =Best_times
+				LDR r6, =copy_space
 				LDR r6, =Failed_runs	
+				
 				
 				; copy arrays in a readwrite memory area in order to perform operations on them
 copy_array_bs 	LDR r11, =Best_times_copy
@@ -221,8 +225,9 @@ Best_times      DCD 0x06, 1300, 0x03, 1700, 0x02, 1200, 0x04, 1900
 Failed_runs     DCD 0x02, 50, 0x05, 30, 0x06, 100, 0x01, 58
 				DCD 0x03, 40, 0x04, 90, 0x07, 25
 
-Num_days           DCB 7
+Num_days        DCB 7
 
+				SPACE 4096
 	
 				ALIGN 2
 

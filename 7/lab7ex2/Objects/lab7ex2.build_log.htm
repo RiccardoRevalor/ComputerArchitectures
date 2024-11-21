@@ -27,6 +27,12 @@ Project File Date:  11/13/2024
 <h2>Output:</h2>
 *** Using Compiler 'V6.22', folder: 'C:\Users\silviab24\AppData\Local\Keil_v5\ARM\ARMCLANG\Bin'
 Build target 'Target_1'
+"RTE/Device/LPC1768/startup_LPC17xx.s", line 222: Warning: A1581W: Added 1 bytes of padding at address 0x10bb
+  222 000010bc Best_times      DCD 0x06, 1300, 0x03, 1700, 0x02, 1200, 0x04, 1900
+0 Errors, 1 Warning
+assembling startup_LPC17xx.s...
+linking...
+Program Size: Code=9104 RO-data=204 RW-data=168 ZI-data=568  
 ".\Objects\lab7ex2.axf" - 0 Error(s), 0 Warning(s).
 
 <h2>Software Packages used:</h2>
@@ -54,10 +60,10 @@ Package Vendor: Keil
    * Component: ARM::CMSIS:CORE@6.1.0
 
    * Component: Keil::Device:Startup@1.0.0
-      Source file:   Device/Source/system_LPC17xx.c
-      Include file:  Device/Include/LPC17xx.h
-      Include file:  RTE_Driver/Config/RTE_Device.h
       Source file:   Device/Source/ARM/startup_LPC17xx.s
+      Include file:  RTE_Driver/Config/RTE_Device.h
+      Include file:  Device/Include/LPC17xx.h
+      Source file:   Device/Source/system_LPC17xx.c
 Build Time Elapsed:  00:00:00
 </pre>
 </body>
