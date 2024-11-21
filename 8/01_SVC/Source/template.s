@@ -11,7 +11,7 @@
 ;   <o> Stack Size (in Bytes) <0x0-0xFFFFFFFF:8>
 ; </h>
 
-Stack_Size      EQU     0x00000200
+Stack_Size      EQU     0x00000400
 
                 AREA    STACK, NOINIT, READWRITE, ALIGN=3
 				SPACE   Stack_Size/2
@@ -35,7 +35,6 @@ __heap_limit
 
                 PRESERVE8
                 THUMB
-
 
 ; Vector Table Mapped to Address 0 at Reset
 
@@ -105,24 +104,23 @@ CRP_Key         DCD     0xFFFFFFFF
 
                 AREA    |.text|, CODE, READONLY
 
-
+				
+	
 ; Reset Handler
 
 Reset_Handler   PROC
-                EXPORT  Reset_Handler             [WEAK]                                            
-				
-				; your code here
-				IMPORT __main
-				LDR r0, =__main
-				bx r0
-				
+                EXPORT  Reset_Handler             [WEAK]    
+				NOP
 				MOV		R0, #3
 				MSR		CONTROL, R0
 				LDR		SP, =Stack_Mem
 				
-				;nop
+				NOP
+				IMPORT __main
+				LDR 	R0,=__main
+				BX 		R0
 				
-				SVC		0x10	;0x000000DA
+				NOP
 				
 InfLoop         B      	InfLoop
                 ENDP
@@ -156,30 +154,15 @@ UsageFault_Handler\
                 ENDP
 SVC_Handler     PROC
                 EXPORT  SVC_Handler               [WEAK]
-				
-				STMFD SP!, {R0-R12, LR}
-				;check the less significant byte in the LR to understand which was the SP used before the SVC
-				
-				;LR->0100 only bit 2 is to check 
-				;D=  1101 -> PSP
-				;9=  1001 -> MSP
-				;1=  0001 -> MSP
-				
-				TST LR, #4
-				
-				MRSEQ R1, MSP
-				MRSNE R1, PSP
-				
-				
-				;LOAD PC in r0
-				LDREQ R0, [R1, #20*4]
-				LDRNE R0, [R1, #6*4]
-			
-				
-				;MRS	R1, psp	
-				;LDR R0, [R1, #24]	;0x000000DC
+					
+				MOV R11, R0 ;address of psp
+				STMFD SP!, {R0-R12, LR} 
+				CMP LR, #0xFFFFFFFD ;check if use psp
+				MRSEQ	R1, psp	
+				MRSNE	R1, msp				
+				LDR R0, [R1, #24]	;0x000000DC
 				LDR R0, [R0,#-4]	;0x000000D8
-				BIC R0, #0xFF000000 
+				BIC R0, #0xFF000000
 				LSR R0, #16
 				; your code here
 				cmp r0, #0x15
@@ -214,17 +197,24 @@ next_bit
 				
 				bne outer_loop
 				
+				;SAVE THE RESULT (R2) AT THE TOP OF THE PSP STACK
+				;IN THE SVC HANDLER MSP IS USED BUT THE RESULT NEEDS TO BE STORED IN THE PSP
+				
+				;r0-r3, r12, LR, PC and PSR are saved in the PSP before raising the svc
+				;so the result goes in -8*4 = -32 (minus because the stack is full descending)
+				
+				str r2, [r11, #-32]
+				
 	
 				
 				
 			
 
 
-uscita			LDMFD SP!, {R0,R1, R3-R12, LR}
-				PUSH {R2}
+uscita			LDMFD SP!, {R0-R12, LR}
 				BX LR
 				
-                ENDP
+	
 DebugMon_Handler\
                 PROC
                 EXPORT  DebugMon_Handler          [WEAK]
@@ -321,10 +311,29 @@ CANActivity_IRQHandler
                 ALIGN
 
 
-; User Initial Stack & Heap
+               ; User Initial Stack & Heap
+
+                IF      :DEF:__MICROLIB
 
                 EXPORT  __initial_sp
                 EXPORT  __heap_base
-                EXPORT  __heap_limit                
+                EXPORT  __heap_limit
+
+                ELSE
+
+                IMPORT  __use_two_region_memory
+                EXPORT  __user_initial_stackheap
+__user_initial_stackheap
+
+                LDR     R0, =  Heap_Mem
+                LDR     R1, =(Stack_Mem + Stack_Size)
+                LDR     R2, = (Heap_Mem +  Heap_Size)
+                LDR     R3, = Stack_Mem
+                BX      LR
+
+                ALIGN
+
+                ENDIF
+
 
                 END

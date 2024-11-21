@@ -1,6 +1,6 @@
 
 //extern int call_svc(void);
-__attribute__((naked)) int call_scv();
+extern void __attribute__((naked)) call_scv(void);
 int main(void){
 	call_svc();
 	
