@@ -103,7 +103,7 @@ CRP_Key         DCD     0xFFFFFFFF
                 ENDIF
 
 
-				AREA svc_code, CODE, READWRITE
+				AREA svc_code, CODE, READONLY
 					
 call_svc		PROC
 				EXPORT call_svc
@@ -127,7 +127,6 @@ Reset_Handler   PROC
                 EXPORT  Reset_Handler             [WEAK]                                            
 				IMPORT __main
 				
-				BL __aeabi_fdiv 
 				;Switch to user mode
 				MRS R0, CONTROL
 				ORR R0, R0, #1

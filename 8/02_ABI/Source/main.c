@@ -20,10 +20,8 @@ int main(void){
 		sumSquares += check_square(x,y,r);
 	}
 
-	// Calculate r^2
   float r_squared = (float)(r * r);
-    // Now, divide sumSquares by r^2 using the my_division function
-  float sumSquares_f = (float)sumSquares;  // Convert sumSquares to float
+  float sumSquares_f = (float)sumSquares;
   float result = my_division(&sumSquares_f, &r_squared);
 
 	while(1);
