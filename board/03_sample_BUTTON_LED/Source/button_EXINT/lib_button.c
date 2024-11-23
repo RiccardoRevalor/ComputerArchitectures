@@ -7,13 +7,27 @@
  */
 void BUTTON_init(void) {
 	
+	//IN THE SCHEMATIC YOU SEE YOU HAVE TO USE PINS:
+	//2.10
+	//2.11
+	//2.12
+	//FOR BUTTONS
+	
+	//Btn pressed: GND absorbs all the current, value read is 0
+	//Btn not pressed: GND not connected to the circuit, value read is 1
+	
+	//PRESSED -> 0; RELEASED -> 1
+	
+	
+	//HERE WE USE AN INTERRUPT FUNCTIONALITY, NOT NORMAL GPIO
+	//SO WE NEED TO FORCE 01 (NOT 00 AS LEDS) TO THE PINS!!!
 	
 	//SET p2.10
-
+	//BITS 21 SET TO 0, 20 SET TO 1
   LPC_PINCON->PINSEL4    |= (1 << 20);		 /* External interrupt 0 pin selection */
-	//for p2.10 -> set bit 21 to 0 and bit 21 to 1 --> APLY A MASK WITH 1 SHIFTED LEFT 20 POSITION
+	//for p2.10 -> set bit 21 to 0 and bit 20 to 1 --> APLY A MASK WITH 1 SHIFTED LEFT 20 POSITION
 	//then I have to set the verse (input, output)
-	//button obviously are onyl for input
+	//button obviously are only for input
 	//we set bits 10, to 0
 	//<< shift lofic left
   LPC_GPIO2->FIODIR      &= ~(1 << 10);    /* PORT2.10 defined as input          */
@@ -24,8 +38,7 @@ void BUTTON_init(void) {
 	
 	
 	//SET p2.11
-	
-
+	//BITS: 23 TO 0, 22 TO 1
   LPC_PINCON->PINSEL4    |= (1 << 22);     /* External interrupt 0 pin selection */
 	
 	//set bit 11 to 0 and leave all the others to 1
@@ -35,17 +48,28 @@ void BUTTON_init(void) {
 	
 	
 	//SET p.21
-  
+  //BITS: 25 TO 0, 24 TO 1	
   LPC_PINCON->PINSEL4    |= (1 << 24);     /* External interrupt 0 pin selection */
 	
 	//set bit 12 to 0 and leave all the others to 1
   LPC_GPIO2->FIODIR      &= ~(1 << 12);    /* PORT2.12 defined as input          */
 	
 	
+	//NOW, WE SET THE EXTERNAL INTERRUPT MODE
+	//The interrupt can be ither trigged by the EDGE or the LEVEL
+	//In case of buttons, we want to trigger the interrupt when they are pressed
+	//In this case, the read current is zero (0 is read), so FALLING EDGE is read
+	//We want to trigger interrupts at FALLING EDGES
 	
+	//POLARITY CAN BE RAISING OR FALLING EDGE
+	//HERE WE NEED FALLING EDGE
 
-  LPC_SC->EXTMODE = 0x7;
-
+  LPC_SC->EXTMODE = 0x7; //set EXTMODE to BE EDGE SENSITIVE
+	
+	
+	//NVIC = NESTED VECTORED INTERRUPT CONTROLLE
+	//SELECTIVE ENABLE OF EXTERNAL INTERRUPTS IN NVIC
+	//Here we enable the 3 interrupts (EINT0, EINT1, EINT2) in NVIC!
   NVIC_EnableIRQ(EINT2_IRQn);              /* enable irq in nvic                 */
   NVIC_EnableIRQ(EINT1_IRQn);              /* enable irq in nvic                 */
   NVIC_EnableIRQ(EINT0_IRQn);              /* enable irq in nvic                 */
