@@ -214,6 +214,8 @@ next_bit
 uscita			LDMFD SP!, {R0-R12, LR}
 				BX LR
 				
+				ENDP
+				
 	
 DebugMon_Handler\
                 PROC
