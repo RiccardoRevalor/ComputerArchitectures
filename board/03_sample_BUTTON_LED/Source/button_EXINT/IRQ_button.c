@@ -29,6 +29,12 @@ They are decalred and exported. Then we can implements them in C!
 void EINT0_IRQHandler (void)	  
 {
 	LED_On(0);
+	/*
+	Open the Peripherals > System Ctrl Block > External INterrupts
+	THe INT bit once the interrupts is served will not be reset to 0 by the system
+	So it's up to YOU to reset it to zero and clear the pending interrupt!
+	
+	*/
   LPC_SC->EXTINT &= (1 << 0);     /* clear pending interrupt         */
 }
 
