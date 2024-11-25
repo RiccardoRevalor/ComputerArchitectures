@@ -65,12 +65,25 @@ void BUTTON_init(void) {
 	//HERE WE NEED FALLING EDGE
 
   LPC_SC->EXTMODE = 0x7; //set EXTMODE to BE EDGE SENSITIVE
+	//I have to turn the bit number 0, 1, 2 to 1 so 000..00111 = 0x7
 	
 	
-	//NVIC = NESTED VECTORED INTERRUPT CONTROLLE
+	//NVIC = NESTED VECTORED INTERRUPT CONTROLLER
 	//SELECTIVE ENABLE OF EXTERNAL INTERRUPTS IN NVIC
 	//Here we enable the 3 interrupts (EINT0, EINT1, EINT2) in NVIC!
   NVIC_EnableIRQ(EINT2_IRQn);              /* enable irq in nvic                 */
-  NVIC_EnableIRQ(EINT1_IRQn);              /* enable irq in nvic                 */
-  NVIC_EnableIRQ(EINT0_IRQn);              /* enable irq in nvic                 */
+  //set priority
+	NVIC_SetPriority(EINT2_IRQn, 1);
+	NVIC_EnableIRQ(EINT1_IRQn);              /* enable irq in nvic                 */
+  NVIC_SetPriority(EINT1_IRQn, 2);
+	NVIC_EnableIRQ(EINT0_IRQn);              /* enable irq in nvic                 */
+	NVIC_SetPriority(EINT0_IRQn, 3);
+	
+	/*
+	PRIORITY OF INTERRUPTS
+	The lower the number the higher the priority.
+	If 2 interrupts have the same priority they're executed as they are triggered.
+	If one interrupt handler is being executed BUT another interrupt with HIGHER PRIORITY (lower number) is raised
+	then this second interrupt is served FIRST! And then the system excutes again the original interrupt handler related to te first interrupt with lower priority.
+	*/
 }

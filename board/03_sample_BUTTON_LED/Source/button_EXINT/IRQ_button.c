@@ -10,6 +10,12 @@ We retrieve the adx of the handler in the IVT
 These handlers are like assembly handlers (like SVC Hnalder for ex)
 But they are written in C
 However, in the assembly startup they are referenced:
+At line 91 ate the Vector table
+								DCD     EINT0_IRQHandler          ; 34: External Interrupt 0
+                DCD     EINT1_IRQHandler          ; 35: External Interrupt 1
+                DCD     EINT2_IRQHandler          ; 36: External Interrupt 2
+                DCD     EINT3_IRQHandler          ; 37: External Interrupt 3
+								
 At line 193 they are exported to be visible to the whole project: 
 EXPORT  EINT0_IRQHandler          [WEAK]
 EXPORT  EINT1_IRQHandler          [WEAK]

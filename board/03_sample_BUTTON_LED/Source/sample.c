@@ -89,7 +89,12 @@ int main (void) {
 	LPC_GPIO2->FIOCLR = 1; //switch the first led off
 	LPC_GPIO2->FIOCLR = 0xFF; //switch all the buttons off
 
-  while (1) {                           /* Loop forever                       */	
+  
+	
+	//there's a lower theoretical limit on how much ower to save
+	
+	
+	while (1) {                           /* Loop forever                       */	
   }
 
 }
