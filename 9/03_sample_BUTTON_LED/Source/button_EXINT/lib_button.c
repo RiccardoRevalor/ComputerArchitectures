@@ -7,11 +7,7 @@
  */
 void BUTTON_init(void) {
 	
-	//IN THE SCHEMATIC YOU SEE YOU HAVE TO USE PINS:
-	//2.10
-	//2.11
-	//2.12
-	//FOR BUTTONS
+	//i HAVE TO SETUP BUTTON KEY 1 SO THE BTN RELATED TO PIN 2.11 ONLY
 	
 	//Btn pressed: GND absorbs all the current, value read is 0
 	//Btn not pressed: GND not connected to the circuit, value read is 1
@@ -22,18 +18,6 @@ void BUTTON_init(void) {
 	//HERE WE USE AN INTERRUPT FUNCTIONALITY, NOT NORMAL GPIO
 	//SO WE NEED TO FORCE 01 (NOT 00 AS LEDS) TO THE PINS!!!
 	
-	//SET p2.10
-	//BITS 21 SET TO 0, 20 SET TO 1
-  LPC_PINCON->PINSEL4    |= (1 << 20);		 /* External interrupt 0 pin selection */
-	//for p2.10 -> set bit 21 to 0 and bit 20 to 1 --> APLY A MASK WITH 1 SHIFTED LEFT 20 POSITION
-	//then I have to set the verse (input, output)
-	//button obviously are only for input
-	//we set bits 10, to 0
-	//<< shift lofic left
-  LPC_GPIO2->FIODIR      &= ~(1 << 10);    /* PORT2.10 defined as input          */
-	//~= negation
-	//I set everything to 1 except for bit 10 that is set to 0
-	
 	
 	
 	
@@ -43,16 +27,7 @@ void BUTTON_init(void) {
 	
 	//set bit 11 to 0 and leave all the others to 1
   LPC_GPIO2->FIODIR      &= ~(1 << 11);    /* PORT2.11 defined as input          */
-	
-	
-	
-	
-	//SET p.21
-  //BITS: 25 TO 0, 24 TO 1	
-  LPC_PINCON->PINSEL4    |= (1 << 24);     /* External interrupt 0 pin selection */
-	
-	//set bit 12 to 0 and leave all the others to 1
-  LPC_GPIO2->FIODIR      &= ~(1 << 12);    /* PORT2.12 defined as input          */
+
 	
 	
 	//NOW, WE SET THE EXTERNAL INTERRUPT MODE
@@ -68,16 +43,9 @@ void BUTTON_init(void) {
 	//I have to turn the bit number 0, 1, 2 to 1 so 000..00111 = 0x7
 	
 	
-	//NVIC = NESTED VECTORED INTERRUPT CONTROLLER
-	//SELECTIVE ENABLE OF EXTERNAL INTERRUPTS IN NVIC
-	//Here we enable the 3 interrupts (EINT0, EINT1, EINT2) in NVIC!
-  NVIC_EnableIRQ(EINT2_IRQn);              /* enable irq in nvic                 */
-  //set priority
-	NVIC_SetPriority(EINT2_IRQn, 1);
+	//NOW I ENABLE EINT1 FOR pin 2.11 with the lowest priority
 	NVIC_EnableIRQ(EINT1_IRQn);              /* enable irq in nvic                 */
-  NVIC_SetPriority(EINT1_IRQn, 2);
-	NVIC_EnableIRQ(EINT0_IRQn);              /* enable irq in nvic                 */
-	NVIC_SetPriority(EINT0_IRQn, 3);
+  NVIC_SetPriority(EINT1_IRQn, 1);
 	
 	/*
 	PRIORITY OF INTERRUPTS

@@ -18,7 +18,7 @@ int main(void){
 	
 	//I put volatile to tell the compiler not to modify these variables
 	volatile float pi = 0.0;
-	volatile float Area = 0.0;
+	volatile int Area = 0.0;
 	
 	int *matrix = &Matrix_Coordinates;
 	
@@ -40,9 +40,10 @@ int main(void){
 	
 	//calculate the final value of pi
 	float den = (float) RADIUS * RADIUS; //for simplicity it's better to calculate the den here and pass the pointer with the result
+	float Area_float = (float) Area;			//convert Area from int to float
 	
 	//I also have to cast the area pointer from (volatile float *) to (float *)
-	pi = my_division((float *) &Area, &den);
+	pi = my_division((float *) &Area_float, &den);
 	
 	//r0 stores the calculated value of PI
 		

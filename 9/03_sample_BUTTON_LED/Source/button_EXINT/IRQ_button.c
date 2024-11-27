@@ -32,30 +32,16 @@ They are decalred and exported. Then we can implements them in C!
 
 
 */
-void EINT0_IRQHandler (void)	  
-{
-	LED_On(0);
-	/*
-	Open the Peripherals > System Ctrl Block > External INterrupts
-	THe INT bit once the interrupts is served will not be reset to 0 by the system
-	So it's up to YOU to reset it to zero and clear the pending interrupt!
-	
-	*/
-  LPC_SC->EXTINT &= (1 << 0);     /* clear pending interrupt         */
-}
 
 
+//NEXT STATE FUNCTION IS DONE IN ASSEMBLY
+ extern unsigned char next_state(unsigned char current_state, unsigned char taps, int *output_bit);
+ 
+ 
 void EINT1_IRQHandler (void)	  
 {
   LED_On(1);
 	LPC_SC->EXTINT &= (1 << 1);     /* clear pending interrupt         */
-}
-
-void EINT2_IRQHandler (void)	  
-{
-	LED_Off(0);
-	LED_Off(1);
-  LPC_SC->EXTINT &= (1 << 2);     /* clear pending interrupt         */    
 }
 
 
