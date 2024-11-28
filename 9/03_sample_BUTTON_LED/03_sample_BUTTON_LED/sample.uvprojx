@@ -10,7 +10,6 @@
       <TargetName>LandTiger_LPC1768 (release)</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pArmCC>6220000::V6.22::ARMCLANG</pArmCC>
       <pCCUsed>6220000::V6.22::ARMCLANG</pCCUsed>
       <uAC6>1</uAC6>
       <TargetOption>
@@ -390,6 +389,11 @@
               <FileType>2</FileType>
               <FilePath>.\Source\startup_LPC17xx.s</FilePath>
             </File>
+            <File>
+              <FileName>ASM_functs.s</FileName>
+              <FileType>2</FileType>
+              <FilePath>.\ASM_functs.s</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -401,9 +405,9 @@
               <FilePath>.\Source\sample.c</FilePath>
             </File>
             <File>
-              <FileName>NextStateFunc.s</FileName>
-              <FileType>2</FileType>
-              <FilePath>.\NextStateFunc.s</FilePath>
+              <FileName>sample.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\sample.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -872,6 +876,11 @@
               <FileType>2</FileType>
               <FilePath>.\Source\startup_LPC17xx.s</FilePath>
             </File>
+            <File>
+              <FileName>ASM_functs.s</FileName>
+              <FileType>2</FileType>
+              <FilePath>.\ASM_functs.s</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -883,9 +892,9 @@
               <FilePath>.\Source\sample.c</FilePath>
             </File>
             <File>
-              <FileName>NextStateFunc.s</FileName>
-              <FileType>2</FileType>
-              <FilePath>.\NextStateFunc.s</FilePath>
+              <FileName>sample.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\sample.h</FilePath>
             </File>
           </Files>
         </Group>

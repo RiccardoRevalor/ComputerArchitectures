@@ -225,10 +225,7 @@ SPI_IRQHandler
 SSP0_IRQHandler           
 SSP1_IRQHandler           
 PLL0_IRQHandler           
-RTC_IRQHandler     
-
-;THESE ARE THE 3 INTERRUPTS FOR BUTTONS (EINT0, EINT1, EINT2)
-;ALSO, WE HAVE EINT3 FOR BUTTONS
+RTC_IRQHandler            
 EINT0_IRQHandler          
 EINT1_IRQHandler          
 EINT2_IRQHandler          
