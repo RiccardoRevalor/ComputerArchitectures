@@ -26,6 +26,8 @@ extern uint8_t ScaleFlag; // <- ScaleFlag needs to visible in order for the emul
 
 unsigned char currentState = 0xAA; //0b101010
 unsigned char taps = 0x1D; //0b00011101
+//for point b:
+unsigned char startState = 0xAA; //when the program is loaded, startState = currentState
 
 /*----------------------------------------------------------------------------
   Main Program

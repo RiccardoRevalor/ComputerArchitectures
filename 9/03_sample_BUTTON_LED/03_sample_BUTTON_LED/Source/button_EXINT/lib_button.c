@@ -14,12 +14,13 @@ void BUTTON_init(void) {
   LPC_PINCON->PINSEL4    |= (1 << 22);     /* External interrupt 0 pin selection */
   LPC_GPIO2->FIODIR      &= ~(1 << 11);    /* PORT2.11 defined as input          */
   
-  //LPC_PINCON->PINSEL4    |= (1 << 24);     /* External interrupt 0 pin selection */
-  //LPC_GPIO2->FIODIR      &= ~(1 << 12);    /* PORT2.12 defined as input          */
+	//key2 p2.12
+  LPC_PINCON->PINSEL4    |= (1 << 24);     /* External interrupt 0 pin selection */
+  LPC_GPIO2->FIODIR      &= ~(1 << 12);    /* PORT2.12 defined as input          */
 
   LPC_SC->EXTMODE = 0x2; //imposto key1 con edge sensitive
 
-  //NVIC_EnableIRQ(EINT2_IRQn);              /* enable irq in nvic                 */
   NVIC_EnableIRQ(EINT1_IRQn);              /* enable irq in nvic                 */
+  NVIC_EnableIRQ(EINT2_IRQn);              /* enable irq in nvic                 */
   //NVIC_EnableIRQ(EINT0_IRQn);              /* enable irq in nvic                 */
 }
