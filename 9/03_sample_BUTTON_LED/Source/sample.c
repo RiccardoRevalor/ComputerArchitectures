@@ -40,7 +40,7 @@ int main (void) {
   SystemInit();  												/* System Initialization (i.e., PLL)  */
   LED_init();                           /* LED Initialization                 */
   BUTTON_init();
-	init_RIT(0x004C4B40);									/* RIT Initialization 50 msec       */
+	init_RIT(0x007270E0);									/* RIT Initialization 75 msec  = 7500000/100000000     */
 	
 	currState = 0xAA;
 	ledsFromState(currState);
