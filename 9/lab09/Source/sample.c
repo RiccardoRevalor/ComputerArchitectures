@@ -32,7 +32,7 @@ extern uint8_t ScaleFlag; // <- ScaleFlag needs to visible in order for the emul
 extern unsigned char next_state(unsigned char, unsigned char, int *);
  
 unsigned char currState;
-unsigned char taps = 0xF;
+unsigned char taps = 0x1D;
 int outputBit = 0;
 
 int main (void) {
