@@ -20,21 +20,22 @@
 **
 ******************************************************************************/
 void enable_timer( uint8_t timer_num )
-	
-/*
-We set 1 to the lowest bit of TCR (Timer Ctrl Reg) to enable counting 
-Then the timer starts counting
-*/
 {
-  if ( timer_num == 2 )
+  if ( timer_num == 0 )
   {
-	LPC_TIM2->TCR = 1;
+	LPC_TIM0->TCR = 1;
   }
-  else
+  else if ( timer_num == 1 )
   {
-	LPC_TIM3->TCR = 1;
+	LPC_TIM1->TCR = 1;
   }
-  return; //NOW TCR IS 1 SO NOW TIMER COUNTER STARTS COUNTING
+	else if ( timer_num == 2 ){
+		LPC_TIM2->TCR = 1;
+	}
+	else if ( timer_num == 3 ){
+		LPC_TIM3->TCR = 1;
+	}
+  return;
 }
 
 /******************************************************************************
@@ -48,11 +49,19 @@ Then the timer starts counting
 ******************************************************************************/
 void disable_timer( uint8_t timer_num )
 {
-  if ( timer_num == 2 )
+  if ( timer_num == 0 )
+  {
+	LPC_TIM0->TCR = 0;
+  }
+  else if ( timer_num == 1 )
+  {
+	LPC_TIM1->TCR = 0;
+  }
+	else if ( timer_num == 2 )
   {
 	LPC_TIM2->TCR = 0;
   }
-  else
+	else if ( timer_num == 3 )
   {
 	LPC_TIM3->TCR = 0;
   }
@@ -72,83 +81,35 @@ void reset_timer( uint8_t timer_num )
 {
   uint32_t regVal;
 
-  if ( timer_num == 2 )
+  if ( timer_num == 0 )
   {
-	regVal = LPC_TIM2->TCR;
+	regVal = LPC_TIM0->TCR;
+	regVal |= 0x02;
+	LPC_TIM0->TCR = regVal;
+  }
+  else if ( timer_num == 1 )
+  {
+	regVal = LPC_TIM1->TCR;
+	regVal |= 0x02;
+	LPC_TIM1->TCR = regVal;
+  }
+	else if ( timer_num == 2 ) 
+	{
+		regVal = LPC_TIM2->TCR;
 	regVal |= 0x02;
 	LPC_TIM2->TCR = regVal;
-  }
-  else
-  {
-	regVal = LPC_TIM3->TCR;
+	}
+	else if ( timer_num == 3 ) 
+	{
+		regVal = LPC_TIM3->TCR;
 	regVal |= 0x02;
 	LPC_TIM3->TCR = regVal;
-  }
+	}
   return;
 }
 
-uint32_t init_timer (uint8_t timer_num, uint32_t TimerInterval_MR0, uint32_t TimerInterval_MR1  ) {
-	
-	if (timer_num == 2) {
-		/*FUNTION TO SET TIMER 2 SPECIFICALLY
-		set MR0 t0 TimerInterval_MR0
-		set MR1 to TimerInterval_MR1
-		when timer reaches MR0 it has to continue counting after the interrupt, without resetting
-		when timer reaches MR1 it ha to reset the counting to 0 after the interrupt and start again
-		*/
-		
-		LPC_TIM2->MR0 = TimerInterval_MR0;
-		LPC_TIM2->MR1 = TimerInterval_MR1;
-		
-		//configure bits on Match Control Register for Timer 2
-		//interrupt on MR0 -> set bit 0 to 1
-		//interrupt on MR1 -> set bit 3 to 1
-		//reset timer after raising interrupt on MR1 -> set bit 4 to 1
-		LPC_TIM2->MCR = (1 << 0) | (1 << 3) | (1 << 4);
-		
-		//enable interrupts for timer2 in NVIC
-		NVIC_EnableIRQ(TIMER2_IRQn);
-		NVIC_SetPriority(TIMER2_IRQn, 0); //max priority
-		
-		return 1;
-	}
-	
-	if (timer_num == 3) {
-		/*FUNTION TO SET TIMER 3 SPECIFICALLY
-		set MR0 t0 TimerInterval_MR0
-		set MR1 to TimerInterval_MR1
-		when timer reaches MR0 it has to continue counting after the interrupt, without resetting
-		when timer reaches MR1 it ha to reset the counting to 0 after the interrupt and start again
-		*/
-		
-		LPC_TIM3->MR0 = TimerInterval_MR0;
-		LPC_TIM3->MR1 = TimerInterval_MR1;
-		
-		//configure bits on Match Control Register for Timer 2
-		//interrupt on MR0 -> set bit 0 to 1
-		//interrupt on MR1 -> set bit 3 to 1
-		//reset timer after raising interrupt on MR1 -> set bit 4 to 1
-		LPC_TIM3->MCR = (1 << 0) | (1 << 3) | (1 << 4);
-		
-		//enable interrupts for timer2 in NVIC
-		NVIC_EnableIRQ(TIMER3_IRQn);
-		NVIC_SetPriority(TIMER3_IRQn, 0); //max priority
-		
-		return 1;
-	}
-	
-	return 0;
-}
-
-
-
-uint32_t init_timer_old ( uint8_t timer_num, uint32_t TimerInterval )
+uint32_t init_timer ( uint8_t timer_num, uint32_t TimerInterval )
 {
-	/* 
-	for simplicity we just put the if statement to handle and init timer 0
-	First I set Match Reg 0 with the value TimerInterval that is the CC
-	So when the timer counter reaches TimerInterval something happens
-	*/
   if ( timer_num == 0 )
   {
 	LPC_TIM0->MR0 = TimerInterval;
@@ -203,25 +164,7 @@ uint32_t init_timer_old ( uint8_t timer_num, uint32_t TimerInterval )
 //	 <i> 1 Stop on MR3: the TC and PC will be stopped and TCR[3] will be set to 0 if MR3 matches the TC
 //	 <i> 0 Feature disabled.
 //   </e>
-
-
-	/*
-	VALUE 3 TO MCR MEANS:
-	e = 011 in binary
-	bit 0 = 1 -> we generate an INTERRUPT on MR 0
-	bit 1 = 1 -> we eant to reset the counter after the count has finished
-	bit 2 = 0 -> we don't want to stop the counter after raising the interruopt so it starts counting AGAIN FROM 0
-	!!!! This means we eill generate an interrupt EVERY SECOND because the counter always restarts after raising the interrupt !!!!
-	
-	*/
-	
-	/*
-	FOR LAB10:
-	just set bit 0 to 1, to generated interrupt
-	*/
-	LPC_TIM0->MCR = 3;  //We give a value to the MCR to decide the outcome after the TimerIntervak is reached by the counter
-	
-	
+	LPC_TIM0->MCR = 25;
 // </h>
 // <<< end of configuration section >>>
 
@@ -239,6 +182,26 @@ uint32_t init_timer_old ( uint8_t timer_num, uint32_t TimerInterval )
 	NVIC_SetPriority(TIMER1_IRQn, 5);	/* less priority than buttons and timer0*/
 	return (1);
   }
+	else if ( timer_num == 2 )
+	{
+		LPC_TIM2->MR0 = TimerInterval/2; //when TIMER 2 reaches MR0 the LED turns OFF;
+		LPC_TIM2->MR1 = TimerInterval;  //when the timer reaches the value held in MR1, the LED must light up. 
+		
+		LPC_TIM2->MCR = 25; //011001 , MR0 sono gli ultimi 3 bit meno significativi, settati come interrupt.  per mr1 setto come reset and interrupt.
+		NVIC_EnableIRQ(TIMER2_IRQn);
+		NVIC_SetPriority(TIMER2_IRQn, 0);	/* less priority than buttons and timer0*/
+		return (1);
+	}
+	else if ( timer_num == 3 )
+	{
+		LPC_TIM3->MR0 = TimerInterval/2; //when TIMER 2 reaches MR0 the LED turns OFF;
+		LPC_TIM3->MR1 = TimerInterval;  //when the timer reaches the value held in MR1, the LED must light up. 
+		
+		LPC_TIM3->MCR = 25; //011001 , MR0 sono gli ultimi 3 bit meno significativi, settati come interrupt.  per mr1 setto come reset and interrupt.
+		NVIC_EnableIRQ(TIMER3_IRQn);
+		NVIC_SetPriority(TIMER3_IRQn, 0);	/* less priority than buttons and timer0*/
+		return (1);
+	}
   return (0);
 }
 
