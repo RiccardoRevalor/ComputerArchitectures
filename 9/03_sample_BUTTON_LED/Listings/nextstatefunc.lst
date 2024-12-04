@@ -1,0 +1,50 @@
+
+
+
+ARM Macro Assembler    Page 1 
+
+
+    1 00000000                 AREA             NextStateFunction, CODE, READON
+LY
+    2 00000000                 export           next_state
+    3 00000000         
+    4 00000000         
+    5 00000000         next_state
+                               FUNCTION
+    6 00000000         
+    7 00000000         
+    8 00000000         
+    9 00000000         
+   10 00000000                 ENDFUNC
+   11 00000000         
+   12 00000000                 END
+Command Line: --debug --xref --diag_suppress=9931,A1950W --cpu=Cortex-M3 --depe
+nd=.\objects\nextstatefunc.d -o.\objects\nextstatefunc.o -I.\Source -I.\Source\
+led -I.\Source\button_EXINT -I.\Source\CMSIS_core -I"D:\ARM Keil\Packs\Keil\LPC
+1700_DFP\2.7.1\Device\Include" --predefine="__EVAL SETA 1" --predefine="__UVISI
+ON_VERSION SETA 541" --predefine="LPC175x_6x SETA 1" --list=.\listings\nextstat
+efunc.lst NextStateFunc.s
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Relocatable symbols
+
+NextStateFunction 00000000
+
+Symbol: NextStateFunction
+   Definitions
+      At line 1 in file NextStateFunc.s
+   Uses
+      None
+Comment: NextStateFunction unused
+next_state 00000000
+
+Symbol: next_state
+   Definitions
+      At line 5 in file NextStateFunc.s
+   Uses
+      At line 2 in file NextStateFunc.s
+Comment: next_state used once
+2 symbols
+335 symbols in table
