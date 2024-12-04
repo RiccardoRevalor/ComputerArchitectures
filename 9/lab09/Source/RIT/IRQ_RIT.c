@@ -27,34 +27,58 @@ extern int outputBit;
 
 void RIT_IRQHandler (void)
 {			
-	if((LPC_GPIO2->FIOPIN & (1<<11)) == 0){ // if button 1 still pressed
+	//EINT1
+	static int downE1=0;	
+	downE1++;
+	if((LPC_GPIO2->FIOPIN & (1<<11)) == 0){
 		reset_RIT();
-		
-		currState = next_state(currState, taps, &outputBit);
-		ledsFromState(currState);
-	} else if ((LPC_GPIO2->FIOPIN & (1<<12)) == 0){
-		unsigned char initialState = currState;
-		int length = 0;
-		do{
-			length++;
-			currState = next_state(currState, taps, &outputBit);
-		} while(currState != initialState);
-		
-		//Show length on leds
-		ledsFromState((unsigned char)length);
+		switch(downE1){
+			case 1:
+				currState = next_state(currState, taps, &outputBit);
+				ledsFromState(currState);
+				break;
+			default:
+				break;
+		}
 	}
-	else {	/* button released */
+	else {	
+		downE1=0;			
 		disable_RIT();
 		reset_RIT();
-		NVIC_EnableIRQ(EINT1_IRQn);							 /* enable Button interrupts */
-		NVIC_EnableIRQ(EINT2_IRQn);							 /* enable Button interrupts */
-		LPC_PINCON->PINSEL4    |= (1 << 22);     /* External interrupt 0 pin selection */
-		LPC_PINCON->PINSEL4    |= (1 << 24);     /* External interrupt 1 pin selection */
+		NVIC_EnableIRQ(EINT1_IRQn);							 
+		LPC_PINCON->PINSEL4    |= (1 << 22);     
 	}
 		
+	//EINT2
+	static int downE2=0;	
+	downE2++;
+	if((LPC_GPIO2->FIOPIN & (1<<12)) == 0){
+		reset_RIT();
+	  unsigned char initialState = currState;
+		int length = 0;
+		switch(downE2){
+			case 1:
+				do{
+					length++;
+					currState = next_state(currState, taps, &outputBit);
+				} while(currState != initialState);
+				
+				//Show length on leds
+				ledsFromState((unsigned char)length);
+				break;
+			default:
+				break;
+		}
+	}
+	else {	/* button released */
+		downE2=0;			
+		disable_RIT();
+		reset_RIT();
+		NVIC_EnableIRQ(EINT2_IRQn);							 /* disable Button interrupts			*/
+		LPC_PINCON->PINSEL4    |= (1 << 24);     /* External interrupt 0 pin selection */
+	}
 	
   LPC_RIT->RICTRL |= 0x1;	/* clear interrupt flag */
-		
 	
   return;
 }
