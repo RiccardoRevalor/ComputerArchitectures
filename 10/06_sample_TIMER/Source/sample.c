@@ -64,8 +64,8 @@ extern uint8_t ScaleFlag; // <- ScaleFlag needs to visible in order for the emul
 	Io ho pensato in questo modo:
 metto 75 hz come freq di lampeggiamento perchè non si veda il flickering (media tra 60 e 90, magari poi adatto), essendo il duty di 50 ho TempoOn = TempoOff = 1 / 75 Hz * 1/2.
 La frequenza PCLK base è 25 Mhz quindi faccio:
-K_on = TempoOn×PCLK=0.00666×25,000,000=166,666.67 -> (int)166667
-K_off = K_on + TempoOff×PCLK=2*166666.67 = 333,333.33 -> (int)333333
+K_off = TempoOff×PCLK=0.00666×25,000,000=166,666.67 -> (int)166667
+K_on = K_off + TempoOn×PCLK=2*166666.67 = 333,333.33 -> (int)333333
 	*/
 	init_timer(2, 0x28B0B, 0x51615);
 	
@@ -80,8 +80,8 @@ K_off = K_on + TempoOff×PCLK=2*166666.67 = 333,333.33 -> (int)333333
 	duty = 50
 	PCLK = 25 Mhz
 	TempoOn = TempoOff = 1 / 10 Hz * 1/2
-	K_On = TempoOn * PCLK = 0.05 * 25,000,000 = 1,250,00 (già int)
-	K_Off = 2 * K_on = 2,500,000 (già int)
+	K_Off = TempoOff * PCLK = 0.05 * 25,000,000 = 1,250,00 (già int)
+	K_On = 2 * K_off = 2,500,000 (già int)
 	*/
 	init_timer(3, 0x1312D0, 0x2625A0);
 	
