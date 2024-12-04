@@ -55,8 +55,23 @@ void TIMER0_IRQHandler (void)
 ** Returned value:		None
 **
 ******************************************************************************/
+
+extern unsigned int circBuffer[7000];
 void TIMER1_IRQHandler (void)
 {
+	
+	//campiona timer 0
+	static unsigned int index = 0;
+	
+	//circular buffer
+	//insert sampled data in circular buffer at position i % 7000
+	
+	unsigned int sample = LPC_TIM0->TC; //sample = the value read from counter of timer 0
+	
+	//insert in buffer
+	circBuffer[index % 7000] = sample;
+	
+	
   LPC_TIM1->IR = 1;			/* clear interrupt flag */
   return;
 }

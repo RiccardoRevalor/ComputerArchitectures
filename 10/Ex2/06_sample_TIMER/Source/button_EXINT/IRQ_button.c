@@ -7,14 +7,16 @@
 
 void EINT0_IRQHandler (void)	  	/* INT0														 */
 {
-	LED_On(0);
 	LPC_SC->EXTINT &= (1 << 0);     /* clear pending interrupt         */
 }
 
 
 void EINT1_IRQHandler (void)	  	/* KEY1														 */
 {
-  LED_On(1);
+  enable_RIT();	//enable_RIT 
+	NVIC_DisableIRQ(EINT1_IRQn);		/* disable Button interrupts			 */
+	LPC_PINCON->PINSEL4    &= ~(1 << 22);     /* GPIO pin selection */
+
 	LPC_SC->EXTINT &= (1 << 1);     /* clear pending interrupt         */
 }
 

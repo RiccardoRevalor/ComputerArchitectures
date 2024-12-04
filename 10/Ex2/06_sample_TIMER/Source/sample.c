@@ -18,11 +18,17 @@
 #include "led/led.h"
 #include "button_EXINT/button.h"
 #include "timer/timer.h"
+#include "RIT.h"
 
 /* Led external variables from funct_led */
 extern unsigned char led_value;					/* defined in lib_led								*/
 volatile unsigned int led_position = 0;
 volatile unsigned int led_position2 = 1;
+
+//ex2
+//cirular buffer of 7000 elements -> it's an array
+volatile unsigned int circBuffer[7000];
+
 #ifdef SIMULATOR
 extern uint8_t ScaleFlag; // <- ScaleFlag needs to visible in order for the emulator to find the symbol (can be placed also inside system_LPC17xx.h but since it is RO, it needs more work)
 #endif
@@ -35,8 +41,8 @@ int main (void) {
 	
 	SystemInit();  												/* System Initialization (i.e., PLL)  */
   LED_init();                           /* LED Initialization                 */
-  //BUTTON_init();												/* BUTTON Initialization              */
-	init_timer(2,0x67C28);							 //0.01 s 100Hz
+  BUTTON_init();												/* BUTTON Initialization              */
+	init_timer(2,0x3D090);							 //0.01 s 100Hz
 	init_timer(3,0x1AB3F0);               //0.07s
 	
 	/* TIMER0 Initialization              */
@@ -56,6 +62,25 @@ int main (void) {
 	LED_On(led_position2);
 	enable_timer(2);
 	enable_timer(3);
+	
+	
+	
+	
+	
+	//EX 2
+	//set and start timer 0 ad a runnign timer
+	init_timer(0, 0xC350);
+	enable_timer(0);
+	
+	//set timer 1 to a frequency 100x than timer2 frequency
+	//0x9C4
+	init_timer(1, 0x9C4);
+	enable_timer(1);
+
+
+	//initialize RIT timer to 50 ms
+	init_RIT(0x004C4B40);
+	
 	
 	LPC_SC->PCON |= 0x1;									/* power-down	mode										*/
 	LPC_SC->PCON &= 0xFFFFFFFFD;						

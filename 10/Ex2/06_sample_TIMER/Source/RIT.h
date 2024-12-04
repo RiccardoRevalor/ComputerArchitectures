@@ -20,9 +20,6 @@ extern void disable_RIT( void );
 extern void reset_RIT( void );
 /* IRQ_RIT.c */
 extern void RIT_IRQHandler (void);
-extern void bubbleSort(unsigned int *arr, int n);
-extern float calculateAvg(unsigned int *arr, int n);
-extern void clean(unsigned int *arr, int n);
 
 #endif /* end __RIT_H */
 /*****************************************************************************
