@@ -73,6 +73,9 @@ int main (void) {
 	enable_timer(0);
 	
 	//set timer 1 to a frequency 100x than timer2 frequency
+	// 100 x 100 Hz = 10000 Hz
+	// 1 / 10000 Hz = 0,0001 s
+	//0,0001 s * 26 * 10 ^ 6 = 2500 -> 0x9C4
 	//0x9C4
 	init_timer(1, 0x9C4);
 	enable_timer(1);
